@@ -2,7 +2,7 @@ Code standards:
 	- camelCase
 	- class names begin with Uppercase
 	- spacing:
-		- tabs - 4 spaces, tabs only
+		- tabs - 4 spaces, not tabs only
 		- { are on the same line with the last piece of code (Java style)
 		- exactly one single space before { => if (true){ is WRONG, if (true) { is CORRECT
 		- exactly one space before conditions; if(true) WRONG, while (true) CORRECT
