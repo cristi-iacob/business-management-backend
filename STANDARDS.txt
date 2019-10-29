@@ -1,0 +1,48 @@
+Code standards:
+	- camelCase
+	- class names begin with Uppercase
+	- spacing:
+		- tabs - 4 spaces, tabs only
+		- { are on the same line with the last piece of code (Java style)
+		- exactly one single space before { => if (true){ is WRONG, if (true) { is CORRECT
+		- exactly one space before conditions; if(true) WRONG, while (true) CORRECT
+		- exactly one space before and after operators; if (a==b) WRONG, if (a == b) CORRECT
+		- always use {}, even if there is a single instruction
+			if (a == b)
+				return true;    //WRONG
+			
+			if (a == b) {
+				return true;    //CORRECT
+			}
+		- exactly one empty line between functions from the same class 
+			int f() {
+				//blabla
+			}					//WRONG
+			int g() {
+				//blabla
+			}	
+
+			int f() {
+				//blabla
+			}
+								//CORRECT
+			int g() {
+				//blabla
+			}
+			
+		- variables and class names should be suggestive
+
+		
+Git standars:
+	- always create and work on another branches, not on master
+	- branches should have a specific name
+	- one commit/modification => there should not be modifications on more than one feature in one commit
+	- always write a short description of the commit 
+	- description format: 
+		Commit title
+		Commit message
+		<blank line>
+		Signature
+	- always sign the commit with your name and email (CTRL + S shortcut in git gui)
+	- make a pull request to master only when all modifications for the branch specific feature are made and you are sure they are what you want to be
+	- pull requests are accepted only after someone else has reviewed the pull request
