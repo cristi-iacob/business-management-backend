@@ -36,6 +36,7 @@ Code standards:
 Git standars:
 	- always create and work on another branches, not on master
 	- branches should have a specific name
+	- branches names are in snake_case
 	- one commit/modification => there should not be modifications on more than one feature in one commit
 	- always write a short description of the commit 
 	- description format: 
