@@ -5,7 +5,10 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import ubb.proiectColectiv.businessmanagementbackend.service.UserService;
 
 import java.util.HashMap;
@@ -54,11 +57,11 @@ public class UserController {
     }
 
     /**
-     * Updates the user approval_status based on what the admins decision
+     * Retrieves all the requests of an user
      * @return
      */
-    @PutMapping(value = "/users/{user_email}/approval_status")
-    public ResponseEntity<String> user_approval(){
+    @GetMapping(value = "/users/{user_email}/requests")
+    public ResponseEntity<String> getRequests() {
         return null;
     }
 }
