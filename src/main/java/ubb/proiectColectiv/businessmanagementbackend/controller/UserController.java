@@ -5,16 +5,10 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import ubb.proiectColectiv.businessmanagementbackend.model.User;
+import org.springframework.web.bind.annotation.*;
 import ubb.proiectColectiv.businessmanagementbackend.service.UserService;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 @RestController
 public class UserController {
@@ -26,17 +20,15 @@ public class UserController {
         service = userService;
     }
 
-    /*@GetMapping(value = "/users")
-    public List<String> getGheorheBoul() throws Exception {
-        service.getGheorgheBoul();
-        ArrayList< String > list = new ArrayList<>();
-        list.add("wegrwe");
-        list.add("wergw");
-        return list;
-    }*/
-
+    /**
+     * Checks if the user already exists based on his username and password approval_status
+     * @param content
+     * @return message of "ok" or "wrong"
+     */
     @GetMapping(value = "/login")
-    public ResponseEntity < String > login(@RequestBody String content) {
+    public ResponseEntity<String> login(@RequestBody String content) {
+        //TODO check login by username password AND APPROVAL_STATUS (see user model)
+        //TODO update method documentation
         try {
             HashMap<String, String> user = new ObjectMapper().readValue(content, HashMap.class);
             ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
@@ -50,5 +42,23 @@ public class UserController {
             System.out.println("error parsing login request content");
             return new ResponseEntity<>("ERROR", HttpStatus.OK);
         }
+    }
+
+    /**
+     * Registers a users email and password credentials and the other credentials if they exist in the database
+     * @return
+     */
+    @PostMapping(value = "/users/register")
+    public ResponseEntity<String> register(){
+        return null;
+    }
+
+    /**
+     * Updates the user approval_status based on what the admins decision
+     * @return
+     */
+    @PutMapping(value = "/users/{user_email}/approval_status")
+    public ResponseEntity<String> user_approval(){
+        return null;
     }
 }

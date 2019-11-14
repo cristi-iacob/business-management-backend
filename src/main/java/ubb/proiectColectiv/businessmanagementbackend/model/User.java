@@ -5,41 +5,38 @@ import java.io.Serializable;
 
 public class User implements Serializable {
 
-    private Integer id;
-    private Integer consulting_level_id;
     private String email;
-    private Integer failed_login_counter;
+    private String password;
     private String first_name;
     private String last_name;
-    private String password;
-    private String profile_picture;
-    private Integer region_id;
     private Integer role_id;
     private Integer supervisor_id;
+    private String profile_picture;
+    private Integer consulting_level_id;
+    private Integer region_id;
+    private Boolean approved_status;
+    private Integer failed_login_counter;
 
     public User() {
     }
 
-    public User(Integer consulting_level_id, String email, Integer failed_login_counter, String first_name, Integer id, String last_name, String password, String profile_picture, Integer region_id, Integer role_id, Integer supervisor_id) {
-        this.consulting_level_id = consulting_level_id;
+    public User(String email, String password) {
         this.email = email;
-        this.failed_login_counter = failed_login_counter;
-        this.first_name = first_name;
-        this.id = id;
-        this.last_name = last_name;
         this.password = password;
-        this.profile_picture = profile_picture;
-        this.region_id = region_id;
+    }
+
+    public User(String email, String password, String first_name, String last_name, Integer role_id, Integer supervisor_id, String profile_picture, Integer consulting_level_id, Integer region_id, Boolean approved_status, Integer failed_login_counter) {
+        this.email = email;
+        this.password = password;
+        this.first_name = first_name;
+        this.last_name = last_name;
         this.role_id = role_id;
         this.supervisor_id = supervisor_id;
-    }
-
-    public Integer getConsulting_level_id() {
-        return consulting_level_id;
-    }
-
-    public void setConsulting_level_id(Integer consulting_level_id) {
+        this.profile_picture = profile_picture;
         this.consulting_level_id = consulting_level_id;
+        this.region_id = region_id;
+        this.approved_status = approved_status;
+        this.failed_login_counter = failed_login_counter;
     }
 
     public String getEmail() {
@@ -50,12 +47,12 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public Integer getFailed_login_counter() {
-        return failed_login_counter;
+    public String getPassword() {
+        return password;
     }
 
-    public void setFailed_login_counter(Integer failed_login_counter) {
-        this.failed_login_counter = failed_login_counter;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getFirst_name() {
@@ -66,44 +63,12 @@ public class User implements Serializable {
         this.first_name = first_name;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public String getLast_name() {
         return last_name;
     }
 
     public void setLast_name(String last_name) {
         this.last_name = last_name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getProfile_picture() {
-        return profile_picture;
-    }
-
-    public void setProfile_picture(String profile_picture) {
-        this.profile_picture = profile_picture;
-    }
-
-    public Integer getRegion_id() {
-        return region_id;
-    }
-
-    public void setRegion_id(Integer region_id) {
-        this.region_id = region_id;
     }
 
     public Integer getRole_id() {
@@ -120,5 +85,45 @@ public class User implements Serializable {
 
     public void setSupervisor_id(Integer supervisor_id) {
         this.supervisor_id = supervisor_id;
+    }
+
+    public String getProfile_picture() {
+        return profile_picture;
+    }
+
+    public void setProfile_picture(String profile_picture) {
+        this.profile_picture = profile_picture;
+    }
+
+    public Integer getConsulting_level_id() {
+        return consulting_level_id;
+    }
+
+    public void setConsulting_level_id(Integer consulting_level_id) {
+        this.consulting_level_id = consulting_level_id;
+    }
+
+    public Integer getRegion_id() {
+        return region_id;
+    }
+
+    public void setRegion_id(Integer region_id) {
+        this.region_id = region_id;
+    }
+
+    public Boolean getApproved_status() {
+        return approved_status;
+    }
+
+    public void setApproved_status(Boolean approved_status) {
+        this.approved_status = approved_status;
+    }
+
+    public Integer getFailed_login_counter() {
+        return failed_login_counter;
+    }
+
+    public void setFailed_login_counter(Integer failed_login_counter) {
+        this.failed_login_counter = failed_login_counter;
     }
 }

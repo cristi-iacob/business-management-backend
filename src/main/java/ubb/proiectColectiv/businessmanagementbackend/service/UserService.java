@@ -1,19 +1,14 @@
 package ubb.proiectColectiv.businessmanagementbackend.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.firebase.database.*;
+import com.google.firebase.database.DatabaseReference;
 import org.springframework.stereotype.Service;
-import ubb.proiectColectiv.businessmanagementbackend.model.User;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 @Service
 public class UserService {
