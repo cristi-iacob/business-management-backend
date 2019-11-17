@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ubb.proiectColectiv.businessmanagementbackend.service.UserService;
+import ubb.proiectColectiv.businessmanagementbackend.utils.FirebaseUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 @RestController
@@ -35,13 +38,13 @@ public class UserController {
         try {
             HashMap<String, String> user = new ObjectMapper().readValue(content, HashMap.class);
             ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-
             if (service.login(user.get("username"), user.get("password"))) {
                 return new ResponseEntity<>(ow.writeValueAsString("OK"), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(ow.writeValueAsString("WRONG"), HttpStatus.OK);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("error parsing login request content");
             return new ResponseEntity<>("ERROR", HttpStatus.OK);
         }
