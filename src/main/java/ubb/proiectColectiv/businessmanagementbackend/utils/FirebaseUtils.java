@@ -1,12 +1,17 @@
 package ubb.proiectColectiv.businessmanagementbackend.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -41,7 +46,9 @@ public class FirebaseUtils {
 
             in.close();
             return data.get(parameters.get(parameters.size() - 1));
-        } catch (Exception e) {
+        } catch (NullPointerException e) {
+            System.out.println("Nothing recieved from firebase");
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
