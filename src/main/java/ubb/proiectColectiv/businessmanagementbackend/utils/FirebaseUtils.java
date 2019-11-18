@@ -13,49 +13,49 @@ import java.util.HashMap;
 import java.util.List;
 
 public class FirebaseUtils {
-	static String databaseLink = "https://proiect-colectiv-85e07.firebaseio.com";
+    static String databaseLink = "https://proiect-colectiv-85e07.firebaseio.com";
 
-	@SuppressWarnings("Duplicates")
-	public static Object getUpstreamData(List< String > parameters) {
-		try {
-			String link = databaseLink;
+    @SuppressWarnings("Duplicates")
+    public static Object getUpstreamData(List<String> parameters) {
+        try {
+            String link = databaseLink;
 
-			for (String parameter : parameters.subList(0, parameters.size() - 1)) {
-				link += "/" + parameter;
-			}
+            for (String parameter : parameters.subList(0, parameters.size() - 1)) {
+                link += "/" + parameter;
+            }
 
-			link += ".json";
+            link += ".json";
 
-			URL url = new URL(link);
-			HttpURLConnection con = (HttpURLConnection) url.openConnection();
-			con.setRequestMethod("GET");
-			int status = con.getResponseCode();
-			BufferedReader in = new BufferedReader(
-					new InputStreamReader(con.getInputStream()));
-			String inputLine;
-			StringBuffer content = new StringBuffer();
-			while ((inputLine = in.readLine()) != null) {
-				content.append(inputLine);
-			}
+            URL url = new URL(link);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            int status = con.getResponseCode();
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuilder content = new StringBuilder();
 
-			HashMap<Object, Object> data = new ObjectMapper().readValue(content.toString(), HashMap.class);
+            while ((inputLine = in.readLine()) != null) {
+                content.append(inputLine);
+            }
 
-			in.close();
-			return data.get(parameters.get(parameters.size() - 1));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+            HashMap data = new ObjectMapper().readValue(content.toString(), HashMap.class);
 
-		return null;
-	}
+            in.close();
+            return data.get(parameters.get(parameters.size() - 1));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-	public static void setValue(List< String > parameters, Object newValue) {
-		DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        return null;
+    }
 
-		for (String parameter : parameters) {
-			ref = ref.child(parameter);
-		}
-		System.out.println(ref.toString());
-		ref.setValueAsync(newValue);
-	}
+    public static void setValue(List<String> parameters, Object newValue) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+
+        for (String parameter : parameters) {
+            ref = ref.child(parameter);
+        }
+        System.out.println(ref.toString());
+        ref.setValueAsync(newValue);
+    }
 }
