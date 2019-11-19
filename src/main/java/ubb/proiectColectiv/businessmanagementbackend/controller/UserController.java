@@ -32,7 +32,6 @@ public class UserController {
     @PostMapping(value = "/login")
     public ResponseEntity<String> login(@RequestBody String content) {
         try {
-
             HashMap user = new ObjectMapper().readValue(content, HashMap.class);
 
             switch (service.login((String) user.get("email"), (String) user.get("password"))) {
@@ -60,13 +59,13 @@ public class UserController {
     @PostMapping(value = "/register")
     public ResponseEntity<String> register(@RequestBody String content) {
         try {
-
             HashMap user = new ObjectMapper().readValue(content, HashMap.class);
 
             if (service.register((String) user.get("email"), (String) user.get("password")).equals("REGISTERED"))
                 return new ResponseEntity<>("REGISTERED", HttpStatus.OK);
             else
                 return new ResponseEntity<>("EXISTS", HttpStatus.OK);
+
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             return new ResponseEntity<>("ERROR", HttpStatus.OK);
