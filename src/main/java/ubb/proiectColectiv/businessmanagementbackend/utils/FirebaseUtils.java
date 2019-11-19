@@ -1,7 +1,5 @@
 package ubb.proiectColectiv.businessmanagementbackend.utils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -10,14 +8,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 
 public class FirebaseUtils {
-    static String databaseLink = "https://proiect-colectiv-85e07.firebaseio.com";
+    private static String databaseLink = "https://proiect-colectiv-85e07.firebaseio.com";
 
     @SuppressWarnings("Duplicates")
     public static Object getUpstreamData(List<String> parameters) {

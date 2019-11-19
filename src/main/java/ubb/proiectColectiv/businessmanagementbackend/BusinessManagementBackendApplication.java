@@ -15,8 +15,6 @@ import java.io.IOException;
 public class BusinessManagementBackendApplication {
 
     public static void main(String[] args) throws IOException {
-        SpringApplication.run(BusinessManagementBackendApplication.class, args);
-
         // Fetch the service account key JSON file contents
         FileInputStream serviceAccount = new FileInputStream("./src/main/resources/proiect-colectiv-85e07-firebase-adminsdk-2ko40-fe4a9f6285.json");
 
@@ -26,6 +24,8 @@ public class BusinessManagementBackendApplication {
                 .setDatabaseUrl("https://proiect-colectiv-85e07.firebaseio.com")
                 .build();
         FirebaseApp.initializeApp(options);
+
+        SpringApplication.run(BusinessManagementBackendApplication.class, args);
     }
 
 }

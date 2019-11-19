@@ -1,7 +1,7 @@
 package ubb.proiectColectiv.businessmanagementbackend.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,16 +34,15 @@ public class UserController {
         try {
 
             HashMap user = new ObjectMapper().readValue(content, HashMap.class);
-            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
-            switch (service.login((String) user.get("email"), (String) user.get("password"), (Integer) user.get("approved_status"))) {
+            switch (service.login((String) user.get("email"), (String) user.get("password"))) {
                 case "APPROVED":
-                    return new ResponseEntity<>(ow.writeValueAsString("APPROVED"), HttpStatus.OK);
+                    return new ResponseEntity<>("APPROVED", HttpStatus.OK);
                 case "UNAPPROVED":
-                    return new ResponseEntity<>(ow.writeValueAsString("UNAPPROVED"), HttpStatus.OK);
+                    return new ResponseEntity<>("UNAPPROVED", HttpStatus.OK);
                 case "WRONG":
                 default:
-                    return new ResponseEntity<>(ow.writeValueAsString("WRONG"), HttpStatus.OK);
+                    return new ResponseEntity<>("WRONG", HttpStatus.OK);
             }
 
         } catch (Exception e) {
@@ -54,13 +53,24 @@ public class UserController {
     }
 
     /**
-     * Registers a users email and password credentials and the other credentials if they exist in the database
+     * Registers a users email and password credentials in the database
      *
      * @return
      */
-    @PostMapping(value = "/users/register")
-    public ResponseEntity<String> register() {
-        return null;
+    @PostMapping(value = "/register")
+    public ResponseEntity<String> register(@RequestBody String content) {
+        try {
+
+            HashMap user = new ObjectMapper().readValue(content, HashMap.class);
+
+            if (service.register((String) user.get("email"), (String) user.get("password")).equals("REGISTERED"))
+                return new ResponseEntity<>("REGISTERED", HttpStatus.OK);
+            else
+                return new ResponseEntity<>("EXISTS", HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("ERROR", HttpStatus.OK);
+        }
     }
 
     /**

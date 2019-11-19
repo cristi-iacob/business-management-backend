@@ -1,9 +1,6 @@
 package ubb.proiectColectiv.businessmanagementbackend.model;
 
-
-import java.io.Serializable;
-
-public class User implements Serializable {
+public class User {
 
     private Boolean approved_status;
     private Integer consulting_level_id;
@@ -125,5 +122,22 @@ public class User implements Serializable {
 
     public void setSupervisor_id(Integer supervisor_id) {
         this.supervisor_id = supervisor_id;
+    }
+
+    @Override
+    public String toString() {
+        return "User{ \n" +
+                "\tapproved_status=" + approved_status +
+                "\tconsulting_level_id=" + consulting_level_id +
+                "\temail='" + email + '\'' +
+                "\tfailed_login_counter=" + failed_login_counter +
+                "\tfirst_name='" + first_name + '\'' +
+                "\tlast_name='" + last_name + '\'' +
+                "\tpassword='" + password + '\'' +
+                "\tprofile_picture='" + profile_picture + '\'' +
+                "\tregion_id=" + region_id +
+                "\trole_id=" + role_id +
+                "\tsupervisor_id=" + supervisor_id +
+                "\n}";
     }
 }
