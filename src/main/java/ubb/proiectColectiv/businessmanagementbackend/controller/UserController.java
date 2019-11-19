@@ -27,7 +27,7 @@ public class UserController {
      * Checks if the user already exists based on his username and password approval_status
      *
      * @param content json with credentials
-     * @return message of "ok" or "wrong"
+     * @return message of "APPROVED", "UNAPPROVED" or "WRONG"
      */
     @PostMapping(value = "/login")
     public ResponseEntity<String> login(@RequestBody String content) {
@@ -62,6 +62,7 @@ public class UserController {
             HashMap user = new ObjectMapper().readValue(content, HashMap.class);
 
             if (service.register((String) user.get("email"), (String) user.get("password")).equals("REGISTERED"))
+                //TODO approval request to supervisor
                 return new ResponseEntity<>("REGISTERED", HttpStatus.OK);
             else
                 return new ResponseEntity<>("EXISTS", HttpStatus.OK);
