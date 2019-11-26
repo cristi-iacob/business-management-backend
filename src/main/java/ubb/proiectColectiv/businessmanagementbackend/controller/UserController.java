@@ -23,13 +23,18 @@ public class UserController {
         service = userService;
     }
 
+    @GetMapping(value = "/rest/hello")
+    public String hello(){
+        return "Jmen de Jmen";
+    }
+
     /**
      * Checks if the user already exists based on his username and password approval_status
      *
      * @param content json with credentials
      * @return message of "APPROVED", "UNAPPROVED" or "WRONG"
      */
-    @PostMapping(value = "/login")
+    @PostMapping(value = "proiectColectiv/login")
     public ResponseEntity<String> login(@RequestBody String content) {
         try {
             HashMap user = new ObjectMapper().readValue(content, HashMap.class);
@@ -56,7 +61,7 @@ public class UserController {
      *
      * @return
      */
-    @PostMapping(value = "/register")
+    @PostMapping(value = "proiectColectiv/register")
     public ResponseEntity<String> register(@RequestBody String content) {
         try {
             HashMap user = new ObjectMapper().readValue(content, HashMap.class);
@@ -77,7 +82,7 @@ public class UserController {
      *
      * @return
      */
-    @GetMapping(value = "/users/{user_email}/requests")
+    @GetMapping(value = "proiectColectiv/users/{user_email}/requests")
     public ResponseEntity<String> getRequests() {
         return null;
     }

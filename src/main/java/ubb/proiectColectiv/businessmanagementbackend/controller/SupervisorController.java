@@ -18,22 +18,22 @@ public class SupervisorController {
         this.supervisorService = supervisorService;
     }
 
-    @GetMapping(value = "/supervisor/approvals")
+    @GetMapping(value = "proiectColectiv/supervisor/approvals")
     public ResponseEntity<String> get_Approvals() {
         return null;
     }
 
-    @GetMapping(value = "/supervisor/requests")
+    @GetMapping(value = "proiectColectiv/supervisor/requests")
     public ResponseEntity<String> get_Requests(@RequestBody String content) {
         return null;
     }
 
-    @GetMapping(value = "/supervisor/approvals/{user}")
+    @GetMapping(value = "proiectColectiv/supervisor/approvals/{user}")
     public ResponseEntity<String> get_Requests_Per_User() {
         return null;
     }
 
-    @PostMapping(value = "/supervisor/setApproval")
+    @PostMapping(value = "proiectColectiv/supervisor/setApproval")
     public ResponseEntity<String> set_Request(@RequestBody String content){
         //TODO endpoint for approving users
         return null;
