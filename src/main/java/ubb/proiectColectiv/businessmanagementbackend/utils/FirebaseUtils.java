@@ -42,6 +42,7 @@ public class FirebaseUtils {
 
             in.close();
             return data.get(parameters.get(parameters.size() - 1));
+
         } catch (NullPointerException e) {
             System.out.println("Nothing recieved from firebase");
         } catch (IOException e) {

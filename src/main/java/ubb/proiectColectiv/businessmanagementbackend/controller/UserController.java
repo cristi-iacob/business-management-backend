@@ -62,7 +62,6 @@ public class UserController {
             HashMap user = new ObjectMapper().readValue(content, HashMap.class);
 
             if (service.register((String) user.get("email"), (String) user.get("password")).equals("REGISTERED"))
-                //TODO approval request to supervisor
                 return new ResponseEntity<>("REGISTERED", HttpStatus.OK);
             else
                 return new ResponseEntity<>("EXISTS", HttpStatus.OK);
