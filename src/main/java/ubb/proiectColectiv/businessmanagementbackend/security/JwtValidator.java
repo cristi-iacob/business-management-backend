@@ -18,10 +18,8 @@ public class JwtValidator {
         try {
             Claims body = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody(); //message
             jwtUser = new JwtUser();
-            //TODO extract email and password
-            jwtUser.setUsername(body.getSubject()); //extracting username from token
-            jwtUser.setId(String.valueOf(Objects.hash(body.get("userId"))));    //extracting userId from token
-            jwtUser.setRole((String) body.get("role"));     //extracting role from token
+            jwtUser.setEmail(body.getSubject()); //extracting email from token
+            jwtUser.setPassword((String) body.get("password"));    //extracting password from token
         } catch (NullPointerException e) {
             e.printStackTrace();
         }

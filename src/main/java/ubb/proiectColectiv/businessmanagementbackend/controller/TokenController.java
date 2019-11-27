@@ -7,7 +7,6 @@ import ubb.proiectColectiv.businessmanagementbackend.security.JwtGenerator;
 
 @RestController
 @RequestMapping("/token")
-//@RequestMapping("proiectColectiv/token")
 public class TokenController {
 
     @Autowired

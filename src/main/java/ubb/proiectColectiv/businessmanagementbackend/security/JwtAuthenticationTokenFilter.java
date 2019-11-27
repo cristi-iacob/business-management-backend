@@ -14,20 +14,18 @@ import java.io.IOException;
 public class JwtAuthenticationTokenFilter extends AbstractAuthenticationProcessingFilter {
 
     public JwtAuthenticationTokenFilter() {
-        super("/rest/**");
+        super("/proiectColectiv/**");
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws AuthenticationException, IOException {
-        //filtering urls
-        //handling stuff
         String header = httpServletRequest.getHeader("Authorization");
 
-        if (header == null || !header.startsWith("Token ")) {
+        if (header == null || !header.startsWith("Token: ")) {
             throw new RuntimeException("JWT Token is missing");
         }
 
-        String authenticationToken = header.substring(6); //get Token
+        String authenticationToken = header.substring(7); //get Token
         JwtAuthenticationToken token = new JwtAuthenticationToken(authenticationToken);
         return getAuthenticationManager().authenticate(token);
     }

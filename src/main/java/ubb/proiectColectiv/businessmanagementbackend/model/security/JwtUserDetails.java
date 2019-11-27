@@ -4,19 +4,18 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class JwtUserDetails implements UserDetails {
 
-    private String username;
-    private String id;
+    private String email;
+    private String password;
     private String token;
     private Collection<? extends GrantedAuthority> grantedAuthorities;
 
     public JwtUserDetails(String username, String id, String token, List<GrantedAuthority> grantedAuthorities) {
-        this.username = username;
-        this.id = id;
+        this.email = username;
+        this.password = id;
         this.token = token;
         this.grantedAuthorities = grantedAuthorities;
     }
@@ -28,12 +27,12 @@ public class JwtUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override
@@ -56,15 +55,7 @@ public class JwtUserDetails implements UserDetails {
         return true;
     }
 
-    public String getId() {
-        return id;
-    }
-
     public String getToken() {
         return token;
-    }
-
-    public Collection<? extends GrantedAuthority> getGrantedAuthorities() {
-        return grantedAuthorities;
     }
 }

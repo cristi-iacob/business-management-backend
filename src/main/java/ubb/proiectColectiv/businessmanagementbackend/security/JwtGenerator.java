@@ -9,9 +9,8 @@ import ubb.proiectColectiv.businessmanagementbackend.model.security.JwtUser;
 @Component
 public class JwtGenerator {
     public String generate(JwtUser jwtUser) {
-        Claims claims = Jwts.claims().setSubject(jwtUser.getUsername());
-        claims.put("userId", jwtUser.getId());
-        claims.put("role", jwtUser.getRole());
+        Claims claims = Jwts.claims().setSubject(jwtUser.getEmail());
+        claims.put("password", jwtUser.getPassword());
 
         return Jwts.builder().setClaims(claims) //returns generated token
                 .signWith(SignatureAlgorithm.HS512, "proiectColectiv")

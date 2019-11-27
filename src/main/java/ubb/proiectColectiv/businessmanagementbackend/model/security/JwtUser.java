@@ -1,11 +1,9 @@
 package ubb.proiectColectiv.businessmanagementbackend.model.security;
 
 public class JwtUser {
-    private String username;
-    private String id;
-    private String role;
     private String email;
     private String password;
+    private String role;
 
     public String getEmail() {
         return email;
@@ -21,22 +19,6 @@ public class JwtUser {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getRole() {
