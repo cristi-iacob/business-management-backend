@@ -82,4 +82,51 @@ public class UserController {
     public ResponseEntity<String> getRequests() {
         return null;
     }
+    @GetMapping(value = "/users/{user_email}/requests")
+    public ResponseEntity<String> getRequests() {
+        return null;
+    }
+
+    @GetMapping(value = "/users/userdata/{id}")
+    public ResponseEntity getUserPersonalInfo(@PathVariable String id) {
+
+
+        List<String> params = Arrays.asList("User", id);
+        Object user = FirebaseUtils.getUpstreamData(params);
+        if (user == null) {
+            return new ResponseEntity("not found", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity(getPersonalInfo(user), HttpStatus.OK);
+    }
+
+    /**
+     * Formats the email in last and first name
+     *
+     * @return json
+     */
+    public String getPersonalInfo(Object user) {
+        System.out.println(user.toString());
+        try {
+            JSONObject json = new JSONObject(user.toString());
+            JSONObject personalInfo = new JSONObject();
+            personalInfo.put("first_name",json.get("first_name"));
+            personalInfo.put("last_name",json.get("last_name"));
+            return personalInfo.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    @GetMapping(value = "/users/userdata/all/{id}")
+    public ResponseEntity getUserAllInfo(@PathVariable String id) {
+
+
+        List<String> params = Arrays.asList("User", id);
+        Object user = FirebaseUtils.getUpstreamData(params);
+        if (user == null) {
+            return new ResponseEntity("not found", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity(user, HttpStatus.OK);
+    }
+
 }
