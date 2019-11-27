@@ -89,8 +89,6 @@ public class UserController {
 
     @GetMapping(value = "/users/userdata/{id}")
     public ResponseEntity getUserPersonalInfo(@PathVariable String id) {
-
-
         List<String> params = Arrays.asList("User", id);
         Object user = FirebaseUtils.getUpstreamData(params);
         if (user == null) {
@@ -119,8 +117,6 @@ public class UserController {
     }
     @GetMapping(value = "/users/userdata/all/{id}")
     public ResponseEntity getUserAllInfo(@PathVariable String id) {
-
-
         List<String> params = Arrays.asList("User", id);
         Object user = FirebaseUtils.getUpstreamData(params);
         if (user == null) {
