@@ -33,17 +33,8 @@ public class UserController {
     public ResponseEntity<String> login(@RequestBody String content) {
         try {
             HashMap user = new ObjectMapper().readValue(content, HashMap.class);
-
-            switch (service.login((String) user.get("email"), (String) user.get("password"))) {
-                case "APPROVED":
-                    return new ResponseEntity<>("APPROVED", HttpStatus.OK);
-                case "UNAPPROVED":
-                    return new ResponseEntity<>("UNAPPROVED", HttpStatus.OK);
-                case "WRONG":
-                default:
-                    return new ResponseEntity<>("WRONG", HttpStatus.OK);
-            }
-
+            String returnedStatus = service.login((String) user.get("email"), (String) user.get("password"));
+            return new ResponseEntity<>(returnedStatus, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("error parsing login request content");
@@ -60,14 +51,22 @@ public class UserController {
     public ResponseEntity<String> register(@RequestBody String content) {
         try {
             HashMap user = new ObjectMapper().readValue(content, HashMap.class);
-
-            if (service.register((String) user.get("email"), (String) user.get("password")).equals("REGISTERED"))
-                return new ResponseEntity<>("REGISTERED", HttpStatus.OK);
-            else
-                return new ResponseEntity<>("EXISTS", HttpStatus.OK);
-
+            return new ResponseEntity<>(service.register((String) user.get("email"), (String) user.get("password")), HttpStatus.OK);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
+            return new ResponseEntity<>("ERROR", HttpStatus.OK);
+        }
+    }
+
+
+    @PostMapping(value = "/logout")
+    public ResponseEntity<String> logout(@RequestBody String content) {
+        try {
+            HashMap user = new ObjectMapper().readValue(content, HashMap.class);
+            return new ResponseEntity<>(service.logout((String) user.get("email")), HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            System.out.println("error parsing login request content");
             return new ResponseEntity<>("ERROR", HttpStatus.OK);
         }
     }
