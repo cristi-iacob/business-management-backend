@@ -28,7 +28,7 @@ public class FirebaseUtils {
                 return null;
 
             if (parameters.size() == 1) {
-                link = "/" + parameters.get(0);
+                link += "/" + parameters.get(0);
             } else {
                 for (String parameter : parameters.subList(0, parameters.size() - 1)) {
                     link += "/" + parameter;
