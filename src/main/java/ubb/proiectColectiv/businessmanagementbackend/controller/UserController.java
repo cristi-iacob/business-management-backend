@@ -2,6 +2,8 @@ package ubb.proiectColectiv.businessmanagementbackend.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,20 +14,17 @@ import org.springframework.web.bind.annotation.RestController;
 import ubb.proiectColectiv.businessmanagementbackend.service.UserService;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 @RestController
 public class UserController {
 
     @Autowired
     private UserService service;
+    private Logger logger = LoggerFactory.getLogger(UserController.class);
 
     public UserController(UserService userService) {
         service = userService;
-    }
-
-    @GetMapping(value = "/rest/hello")
-    public String hello(){
-        return "Jmen de Jmen";
     }
 
     /**
@@ -34,24 +33,23 @@ public class UserController {
      * @param content json with credentials
      * @return message of "APPROVED", "UNAPPROVED" or "WRONG"
      */
-    @PostMapping(value = "proiectColectiv/login")
-    public ResponseEntity<String> login(@RequestBody String content) {
+    @PostMapping(value = "/login")
+    public ResponseEntity login(@RequestBody String content) {
         try {
             HashMap user = new ObjectMapper().readValue(content, HashMap.class);
+            String returnedStatus = service.login((String) user.get("email"), (String) user.get("password"));
+            ResponseEntity responseEntity = new ResponseEntity<>(returnedStatus, HttpStatus.OK);
 
-            switch (service.login((String) user.get("email"), (String) user.get("password"))) {
-                case "APPROVED":
-                    return new ResponseEntity<>("APPROVED", HttpStatus.OK);
-                case "UNAPPROVED":
-                    return new ResponseEntity<>("UNAPPROVED", HttpStatus.OK);
-                case "WRONG":
-                default:
-                    return new ResponseEntity<>("WRONG", HttpStatus.OK);
-            }
+            if (responseEntity.getBody().equals("UNAPPROVED"))
+                logger.info("User " + user.get("email") + " is unapproved");
+            else if (responseEntity.getBody().equals("WRONG"))
+                logger.info("User " + user.get("email") + " is not registered");
+            else
+                logger.info("User " + user.get("email") + "logged in with token" + responseEntity.getBody());
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("error parsing login request content");
+            return responseEntity;
+        } catch (JsonProcessingException e) {
+            logger.error("error parsing login request content");
             return new ResponseEntity<>("ERROR", HttpStatus.OK);
         }
     }
@@ -61,18 +59,38 @@ public class UserController {
      *
      * @return
      */
-    @PostMapping(value = "proiectColectiv/register")
-    public ResponseEntity<String> register(@RequestBody String content) {
+    @PostMapping(value = "/register")
+    public ResponseEntity register(@RequestBody String content) {
         try {
             HashMap user = new ObjectMapper().readValue(content, HashMap.class);
-
-            if (service.register((String) user.get("email"), (String) user.get("password")).equals("REGISTERED"))
-                return new ResponseEntity<>("REGISTERED", HttpStatus.OK);
+            ResponseEntity responseEntity = new ResponseEntity<>(service.register((String) user.get("email"), (String) user.get("password")), HttpStatus.OK);
+            if (responseEntity.getBody().equals("EXISTS"))
+                logger.info("User " + user.get("email") + " is already registered");
             else
-                return new ResponseEntity<>("EXISTS", HttpStatus.OK);
+                logger.info("User " + user.get("email") + " registered as " + Objects.hash(user.get("email")) + " with token " + responseEntity.getBody());
 
+            return responseEntity;
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            logger.error("error parsing login request content");
+            return new ResponseEntity<>("ERROR", HttpStatus.OK);
+        }
+    }
+
+
+    @PostMapping(value = "/logout")
+    public ResponseEntity logout(@RequestBody String content) {
+        try {
+            HashMap user = new ObjectMapper().readValue(content, HashMap.class);
+            ResponseEntity responseEntity = new ResponseEntity<>(service.logout((String) user.get("email"), (String) user.get("token")), HttpStatus.OK);
+
+            if (responseEntity.getBody().equals("DELETED"))
+                logger.info("User " + user.get("email") + " logged out with token " + user.get("token"));
+            else
+                logger.warn("User " + user.get("email") + " tried logging out without being logged");
+
+            return responseEntity;
+        } catch (JsonProcessingException e) {
+            logger.error("error parsing login request content");
             return new ResponseEntity<>("ERROR", HttpStatus.OK);
         }
     }
@@ -82,8 +100,51 @@ public class UserController {
      *
      * @return
      */
-    @GetMapping(value = "proiectColectiv/users/{user_email}/requests")
+    @GetMapping(value = "/users/{user_email}/requests")
     public ResponseEntity<String> getRequests() {
         return null;
     }
+    @GetMapping(value = "/users/{user_email}/requests")
+    public ResponseEntity<String> getRequests() {
+        return null;
+    }
+
+    @GetMapping(value = "/users/userdata/{id}")
+    public ResponseEntity getUserPersonalInfo(@PathVariable String id) {
+        List<String> params = Arrays.asList("User", id);
+        Object user = FirebaseUtils.getUpstreamData(params);
+        if (user == null) {
+            return new ResponseEntity("not found", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity(getPersonalInfo(user), HttpStatus.OK);
+    }
+
+    /**
+     * Formats the email in last and first name
+     *
+     * @return json
+     */
+    public String getPersonalInfo(Object user) {
+        System.out.println(user.toString());
+        try {
+            JSONObject json = new JSONObject(user.toString());
+            JSONObject personalInfo = new JSONObject();
+            personalInfo.put("first_name",json.get("first_name"));
+            personalInfo.put("last_name",json.get("last_name"));
+            return personalInfo.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    @GetMapping(value = "/users/userdata/all/{id}")
+    public ResponseEntity getUserAllInfo(@PathVariable String id) {
+        List<String> params = Arrays.asList("User", id);
+        Object user = FirebaseUtils.getUpstreamData(params);
+        if (user == null) {
+            return new ResponseEntity("not found", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity(user, HttpStatus.OK);
+    }
+
 }
