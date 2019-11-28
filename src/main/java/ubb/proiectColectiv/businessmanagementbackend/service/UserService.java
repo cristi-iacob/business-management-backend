@@ -51,12 +51,16 @@ public class UserService {
         return token;
     }
 
-    public String logout(String hashedEmail, String token) {
-        try {
-            tokens.get(hashedEmail).remove(token);
+    public String logout(String email, String token) {
+        if (tokens.get(email).remove(token))
             return "DELETED";
-        } catch (NullPointerException e) {
+        else
             return "NOT LOGGED";
-        }
+    }
+
+    public Object getPersonalData(String token, String email) {
+        if (tokens.get(email).contains(token))
+            return FirebaseUtils.getUpstreamData(Arrays.asList("User", String.valueOf(Objects.hash(email))));
+        return "INVALID TOKEN";
     }
 }

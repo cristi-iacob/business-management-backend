@@ -26,11 +26,6 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
             <exclusions>
@@ -41,11 +36,11 @@
             </exclusions>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
+        <!-- https://mvnrepository.com/artifact/org.json/json -->
         <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt</artifactId>
-            <version>0.9.1</version>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20190722</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.google.firebase/firebase-admin -->
