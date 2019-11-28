@@ -42,8 +42,8 @@ public class UserService {
             return "EXISTS";
 
         User user = new User(email, password);
-        user.setApproved_status(false);
-        user.setFailed_login_counter(0);
+        user.setApprovedStatus(false);
+        user.setFailedLoginCounter(0);
 
         FirebaseUtils.setValue(Arrays.asList("User", String.valueOf(Objects.hash(email))), user);
         String token = RandomStringUtils.randomAlphanumeric(15);
