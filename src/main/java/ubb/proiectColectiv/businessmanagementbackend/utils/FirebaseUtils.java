@@ -24,8 +24,15 @@ public class FirebaseUtils {
         try {
             String link = databaseLink;
 
-            for (String parameter : parameters.subList(0, parameters.size() - 1)) {
-                link += "/" + parameter;
+            if (parameters.size() == 0)
+                return null;
+
+            if (parameters.size() == 1) {
+                link = "/" + parameters.get(0);
+            } else {
+                for (String parameter : parameters.subList(0, parameters.size() - 1)) {
+                    link += "/" + parameter;
+                }
             }
 
             link += ".json";
@@ -45,7 +52,11 @@ public class FirebaseUtils {
             HashMap data = new ObjectMapper().readValue(content.toString(), HashMap.class);
 
             in.close();
-            return data.get(parameters.get(parameters.size() - 1));
+            if (parameters.size() > 1) {
+                return data.get(parameters.get(parameters.size() - 1));
+            } else {
+                return data;
+            }
 
         } catch (NullPointerException e) {
             logger.warn("Nothing recieved from firebase");
