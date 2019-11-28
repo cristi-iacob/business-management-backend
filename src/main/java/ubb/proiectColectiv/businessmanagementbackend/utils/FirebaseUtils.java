@@ -3,6 +3,8 @@ package ubb.proiectColectiv.businessmanagementbackend.utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,7 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 
 public class FirebaseUtils {
+
     private static String databaseLink = "https://proiect-colectiv-85e07.firebaseio.com";
+    private static Logger logger = LoggerFactory.getLogger(FirebaseUtils.class);
 
     @SuppressWarnings("Duplicates")
     public static Object getUpstreamData(List<String> parameters) {
@@ -42,8 +46,9 @@ public class FirebaseUtils {
 
             in.close();
             return data.get(parameters.get(parameters.size() - 1));
+
         } catch (NullPointerException e) {
-            System.out.println("Nothing recieved from firebase");
+            logger.warn("Nothing recieved from firebase");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -57,7 +62,8 @@ public class FirebaseUtils {
         for (String parameter : parameters) {
             ref = ref.child(parameter);
         }
-        System.out.println(ref.toString());
+
+        logger.trace(ref.toString());
         ref.setValueAsync(newValue);
     }
 }
