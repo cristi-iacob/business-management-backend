@@ -11,8 +11,6 @@ import java.util.*;
 @Service
 public class UserService {
 
-    private Map<String, List<String>> tokens = new HashMap<>();
-
     public String login(String email, String password) {
 
         Object userPassword = FirebaseUtils.getUpstreamData(Arrays.asList("User", String.valueOf(Objects.hash(email)), "password")); //get password of user from Firebase
@@ -23,12 +21,12 @@ public class UserService {
             if (user_approved_status.equals(true)) {
 
                 String token = RandomStringUtils.randomAlphanumeric(15);    //generate token
-                if (tokens.containsKey(email))
-                    tokens.get(email).add(token);
+                if (TokenService.containsKey(email))
+                    TokenService.getTokens().get(email).add(token);
                 else
-                    tokens.put(email, new ArrayList<>(Collections.singletonList(token)));
-                return token;
+                    TokenService.getTokens().put(email, new ArrayList<>(Collections.singletonList(token)));
 
+                return token;
             } else
                 return "UNAPPROVED";
         }
@@ -47,19 +45,19 @@ public class UserService {
 
         FirebaseUtils.setValue(Arrays.asList("User", String.valueOf(Objects.hash(email))), user);
         String token = RandomStringUtils.randomAlphanumeric(15);
-        tokens.put(email, new ArrayList<>(Collections.singletonList(token)));
+        TokenService.getTokens().put(email, new ArrayList<>(Collections.singletonList(token)));
         return token;
     }
 
     public String logout(String email, String token) {
-        if (tokens.get(email).remove(token))
+        if (TokenService.getTokens().get(email).remove(token))
             return "DELETED";
         else
             return "NOT LOGGED";
     }
 
     public Object getPersonalData(String token, String email) {
-        if (tokens.get(email).contains(token))
+        if (TokenService.containsToken(email, token))
             return FirebaseUtils.getUpstreamData(Arrays.asList("User", String.valueOf(Objects.hash(email))));
         return "INVALID TOKEN";
     }
