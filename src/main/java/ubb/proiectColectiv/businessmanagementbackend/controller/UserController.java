@@ -84,7 +84,7 @@ public class UserController {
     @PostMapping(value = "/logout")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String token, @RequestBody String content) {
         try {
-            HashMap json = mapper.readValue(content, HashMap.class);
+            HashMap<?,?> json = mapper.readValue(content, HashMap.class);
             String logoutStatus = service.logout((String) json.get("email"), token);
             ResponseEntity<?> responseEntity = new ResponseEntity<>(logoutStatus, HttpStatus.OK);
 
@@ -108,13 +108,11 @@ public class UserController {
      * @return Personal informations of user as Json
      */
     @GetMapping(value = "/users/userdata/{email}")
-    public ResponseEntity getUserPersonalInfo(@RequestHeader("Authorization") String token, @PathVariable(value = "email") String email) {
-
+    public ResponseEntity<?> getUserPersonalInfo(@RequestHeader("Authorization") String token, @PathVariable String email) {
         try {
             Object userReturned = service.getPersonalData(token, email);
             logger.info("Retrieved personal info from user " + email + " with token " + token);
             return new ResponseEntity<>(mapper.writeValueAsString(userReturned), HttpStatus.OK);
-
         } catch (JsonProcessingException e) {
             logger.error("error parsing getPersonalInfo request content");
             return new ResponseEntity<>("ERROR", HttpStatus.OK);
