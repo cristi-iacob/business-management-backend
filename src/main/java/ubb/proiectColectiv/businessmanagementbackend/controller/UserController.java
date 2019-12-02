@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import ubb.proiectColectiv.businessmanagementbackend.model.User;
 import ubb.proiectColectiv.businessmanagementbackend.service.UserService;
 
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Objects;
 

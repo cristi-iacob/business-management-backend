@@ -10,9 +10,9 @@ import java.util.Objects;
 @Service
 public class RequestService {
 
-    public String createProfileRequest(String token, String email, HashMap request) {
+    public String createProfileRequest(String token, String email, HashMap<?,?> request) {
         if (TokenService.containsToken(email, token)) {
-            FirebaseUtils.setValue(Arrays.asList("UserEdits", String.valueOf(Objects.hash(email))), request);
+            FirebaseUtils.setValue(Arrays.asList("UserEdits", "\"" + Objects.hash(email) + "\""), request);
             return "REQUEST ADDED";
         }
         return "INVALID TOKEN";
