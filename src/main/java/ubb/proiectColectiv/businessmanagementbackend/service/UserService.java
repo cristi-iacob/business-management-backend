@@ -39,12 +39,13 @@ public class UserService {
                 }
                 return "UNAPPROVED";
             }
+
             lastLoginAttempts.put(email, System.currentTimeMillis()); //set time of last login attempt for current user
-            if (user.getFailedLoginCounter() == 2) {
+            FirebaseUtils.setValue(Arrays.asList("User", hashedEmail, "failedLoginCounter"), user.getFailedLoginCounter() + 1);
+            if (user.getFailedLoginCounter() == 2) { //this counter is the one before the incrementation
                 FirebaseUtils.setValue(Arrays.asList("User", hashedEmail, "blockedStatus"), Boolean.TRUE);
                 return "BLOCKED";
             }
-            FirebaseUtils.setValue(Arrays.asList("User", hashedEmail, "failedLoginCounter"), user.getFailedLoginCounter() + 1);
             return "WRONG PASSWORD";
         }
         return "INEXISTENT";
