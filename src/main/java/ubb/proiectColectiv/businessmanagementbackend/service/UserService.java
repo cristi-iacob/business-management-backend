@@ -24,17 +24,21 @@ public class UserService {
         if (userInDatabase != null) {
             User user = mapper.convertValue(userInDatabase, User.class); //convert HashMap to User POJO
             if (password.equals(user.getPassword())) {
+
                 if (user.getBlockedStatus().equals(true)) {
                     lastLoginAttempts.put(email, System.currentTimeMillis()); //set time of last login attempt for current user
                     return "BLOCKED";
                 }
+
+                if (user.getFailedLoginCounter() != 0)
+                    FirebaseUtils.setValue(Arrays.asList("User", hashedEmail, "failedLoginCounter"), 0); //reset counter to 0 cause user entered correct credentials
+
                 if (user.getApprovedStatus().equals(true)) {
-                    String token = RandomStringUtils.randomAlphanumeric(15);    //generate token
+                    String token = RandomStringUtils.randomAlphanumeric(15);    //generate token for this user
                     if (TokenService.containsKey(email))
                         TokenService.getTokens().get(email).add(token);
                     else
                         TokenService.getTokens().put(email, new ArrayList<>(Collections.singletonList(token)));
-
                     return token;
                 }
                 return "UNAPPROVED";
