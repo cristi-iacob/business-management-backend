@@ -33,10 +33,10 @@ public class SupervisorController {
     @GetMapping(value = "/supervisor/requests")
     public ResponseEntity<String> getRequests() {
         try {
-            logger.info("Sending all unapproved users!\n");
+            logger.info("Sending all unapproved users!");
             return new ResponseEntity<>(objectMapper.writeValueAsString(supervisorService.getPendingRequests()), HttpStatus.OK);
         } catch (Exception e) {
-            logger.error("Error at sending all unapproved users!\n" + e.getStackTrace());
+            logger.error("Error at sending all unapproved users!" + e.getStackTrace());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
