@@ -3,6 +3,7 @@ package ubb.proiectColectiv.businessmanagementbackend.model;
 public class User {
 
     private Boolean approvedStatus;
+    private Boolean blockedStatus;
     private Integer consultingLevelId;
     private String email;
     private Integer failedLoginCounter;
@@ -14,34 +15,20 @@ public class User {
     private Integer roleId;
     private Integer supervisorId;
 
-    public User() {
-    }
-
-    public User(String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
-
-    public User(Boolean approvedStatus, Integer consultingLevelId, String email, Integer failedLoginCounter, String firstName, String lastName, String password, String profilePicture, Integer regionId, Integer roleId, Integer supervisorId) {
-        this.approvedStatus = approvedStatus;
-        this.consultingLevelId = consultingLevelId;
-        this.email = email;
-        this.failedLoginCounter = failedLoginCounter;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.password = password;
-        this.profilePicture = profilePicture;
-        this.regionId = regionId;
-        this.roleId = roleId;
-        this.supervisorId = supervisorId;
-    }
-
     public Boolean getApprovedStatus() {
         return approvedStatus;
     }
 
     public void setApprovedStatus(Boolean approvedStatus) {
         this.approvedStatus = approvedStatus;
+    }
+
+    public Boolean getBlockedStatus() {
+        return blockedStatus;
+    }
+
+    public void setBlockedStatus(Boolean blockedStatus) {
+        this.blockedStatus = blockedStatus;
     }
 
     public Integer getConsultingLevelId() {

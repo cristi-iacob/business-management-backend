@@ -35,13 +35,25 @@ public class UserController {
             String loginStatus = service.login(user.getEmail(), user.getPassword());
             ResponseEntity<?> responseEntity = new ResponseEntity<>(loginStatus, HttpStatus.OK);
 
-            if (loginStatus.equals("UNAPPROVED"))
-                logger.info("User " + user.getEmail() + " is unapproved");
-            else if (loginStatus.equals("WRONG"))
-                logger.info("User " + user.getEmail() + " is not registered");
-            else
-                logger.info("User " + user.getEmail() + "logged in with token " + responseEntity.getBody());
-
+            switch (loginStatus) {
+                case "SPAM":
+                    logger.info("User " + user.getEmail() + " tried to log in again before 10 seconds have passed");
+                    break;
+                case "BLOCKED":
+                    logger.info("User " + user.getEmail() + " tried to log in but is blocked");
+                    break;
+                case "UNAPPROVED":
+                    logger.info("User " + user.getEmail() + " is unapproved");
+                    break;
+                case "WRONG PASSWORD":
+                    logger.info("User " + user.getEmail() + " tried to log in with wrong password");
+                    break;
+                case "INEXISTENT":
+                    logger.info("User " + user.getEmail() + " is not registered");
+                    break;
+                default:
+                    logger.info("User " + user.getEmail() + "logged in with token " + responseEntity.getBody());
+            }
             return responseEntity;
         } catch (JsonProcessingException e) {
             logger.error("error parsing login request content");
@@ -62,11 +74,11 @@ public class UserController {
             String registerStatus = service.register(user.getEmail(), user.getPassword());
             ResponseEntity<?> responseEntity = new ResponseEntity<>(registerStatus, HttpStatus.OK);
 
-            if (registerStatus.equals("EXISTS"))
+            if (registerStatus.equals("EXISTS")) {
                 logger.info("User " + user.getEmail() + " is already registered");
-            else
+            } else {
                 logger.info("User " + user.getEmail() + " registered as " + Objects.hash(user.getEmail()) + " with token " + responseEntity.getBody());
-
+            }
             return responseEntity;
         } catch (JsonProcessingException e) {
             logger.error("error parsing register request content");
@@ -84,15 +96,15 @@ public class UserController {
     @PostMapping(value = "/logout")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String token, @RequestBody String content) {
         try {
-            HashMap<?,?> json = mapper.readValue(content, HashMap.class);
+            HashMap<?, ?> json = mapper.readValue(content, HashMap.class);
             String logoutStatus = service.logout((String) json.get("email"), token);
             ResponseEntity<?> responseEntity = new ResponseEntity<>(logoutStatus, HttpStatus.OK);
 
-            if (logoutStatus.equals("DELETED"))
+            if (logoutStatus.equals("LOGGED OUT")) {
                 logger.info("User " + json.get("email") + " logged out with token " + json.get("token"));
-            else
+            } else {
                 logger.warn("User " + json.get("email") + " tried logging out without being logged or having a token");
-
+            }
             return responseEntity;
         } catch (JsonProcessingException e) {
             logger.error("error parsing logout request content");
