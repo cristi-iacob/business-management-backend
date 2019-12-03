@@ -26,4 +26,30 @@ public class SupervisorService {
 
 		return retList;
 	}
+
+	private Boolean isSupervisor(String id) {
+		HashMap < String, Object > user = (HashMap) FirebaseUtils.getUpstreamData(Arrays.asList("User", id));
+
+		if (user.get("roleId").toString().compareTo("2") == 0) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public List < String > getUsersForSupervisor(String id) {
+		List < String > retList = new ArrayList<>();
+
+		if (!isSupervisor(id)) {
+			return null;
+		}
+
+		HashMap < String, Object > userData = (HashMap) FirebaseUtils.getUpstreamData(Arrays.asList("User", id, "usersList"));
+
+		for (Object email : userData.values()) {
+			retList.add((String) email);
+		}
+
+		return retList;
+	}
 }
