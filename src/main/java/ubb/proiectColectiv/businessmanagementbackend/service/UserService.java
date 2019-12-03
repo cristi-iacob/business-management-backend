@@ -30,8 +30,9 @@ public class UserService {
                     return "BLOCKED";
                 }
 
-                if (user.getFailedLoginCounter() != 0)
+                if (user.getFailedLoginCounter() != 0) {
                     FirebaseUtils.setValue(Arrays.asList("User", hashedEmail, "failedLoginCounter"), 0); //reset counter to 0 cause user entered correct credentials
+                }
 
                 if (user.getApprovedStatus().equals(true)) {
                     String token = RandomStringUtils.randomAlphanumeric(15);    //generate token for this user
@@ -81,8 +82,9 @@ public class UserService {
     }
 
     public Object getPersonalData(String token, String email) {
-        if (TokenService.containsToken(email, token))
+        if (TokenService.containsToken(email, token)) {
             return FirebaseUtils.getUpstreamData(Arrays.asList("User", "\"" + (Objects.hash(email) + "\"")));
+        }
         return "INVALID TOKEN";
     }
 }
