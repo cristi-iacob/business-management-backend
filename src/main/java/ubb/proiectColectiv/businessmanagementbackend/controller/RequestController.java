@@ -18,19 +18,17 @@ public class RequestController {
     @Autowired
     private RequestService service;
     private Logger logger = LoggerFactory.getLogger(RequestController.class);
-    private ObjectMapper mapper = new ObjectMapper();
 
     @PostMapping(value = "/requests/profileRequest/create")
     public ResponseEntity<?> createUserPersonalInfoRequest(@RequestHeader("Authorization") String token, @RequestBody String content) {
         try {
-            HashMap<?, ?> request = mapper.readValue(content, HashMap.class);
-            String[] requestStatus = service.createProfileRequest(token, request); //[requestId][email]
-            ResponseEntity<?> responseEntity = new ResponseEntity<>(requestStatus, HttpStatus.OK);
+            String[] requestStatus = service.createProfileRequest(token, content); //[responseMessage][email][requestId]
+            ResponseEntity<?> responseEntity = new ResponseEntity<>(requestStatus[0], HttpStatus.OK);
 
             if (requestStatus[0].equals("REQUEST ADDED")) {
-                logger.info("User " + requestStatus[1] + " created a request with id: " + requestStatus[0]);
+                logger.info("User " + requestStatus[1] + " created a request with id: " + requestStatus[2]);
             } else {
-                logger.warn("User " + requestStatus[1] + " tried to create a request without being logged or having a token");
+                logger.warn("Someone tried to create a request without being logged or having a token");
             }
 
             return responseEntity;
@@ -41,7 +39,20 @@ public class RequestController {
     }
 
     @PostMapping(value = "/requests/profileRequest/approve/{requestId}")
-    public ResponseEntity<?> approveUserPersonalInfoRequest(@RequestHeader("Authorization") String token, @PathVariable String requestId){
-        return null;
+    public ResponseEntity<?> approveUserPersonalInfoRequest(@RequestHeader("Authorization") String token, @PathVariable String requestId) {
+        try {
+            String[] requestStatus = service.approveProfileRequest(token, requestId);
+
+            if (requestStatus[0].equals("REQUEST APPROVED")) {
+                logger.info("User " + requestStatus[1] + " approved request with id: " + requestId);
+            } else {
+                logger.warn("Someone tried to create a request without being logged or having a token");
+            }
+
+            return new ResponseEntity<>(requestStatus[0], HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            logger.error("error parsing login request content");
+            return new ResponseEntity<>("ERROR", HttpStatus.OK);
+        }
     }
 }

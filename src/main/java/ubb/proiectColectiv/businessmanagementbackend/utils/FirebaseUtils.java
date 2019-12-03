@@ -77,4 +77,14 @@ public class FirebaseUtils {
         logger.trace(ref.toString());
         ref.setValueAsync(newValue);
     }
+
+    public static void removeValue(List<String> parameters){
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+
+        for (String parameter : parameters) {
+            ref = ref.child(parameter);
+        }
+        ref.removeValueAsync();
+        logger.trace(ref.toString() + " has been removed");
+    }
 }
