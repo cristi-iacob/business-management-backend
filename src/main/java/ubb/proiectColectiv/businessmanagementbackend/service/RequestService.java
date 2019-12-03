@@ -10,11 +10,15 @@ import java.util.Objects;
 @Service
 public class RequestService {
 
-    public String createProfileRequest(String token, String email, HashMap<?,?> request) {
-        if (TokenService.containsToken(email, token)) {
-            FirebaseUtils.setValue(Arrays.asList("UserEdits", "\"" + Objects.hash(email) + "\""), request);
-            return "REQUEST ADDED";
+    public String[] createProfileRequest(String token, HashMap<?, ?> request) {
+        try {
+            String email = TokenService.getKeyByToken(token);
+            String hashedEmail = "\"" + Objects.hash(email) + "\"";
+            String numberOfChildren = FirebaseUtils.getUpstreamData(Arrays.asList("UserEdits", hashedEmail));
+            FirebaseUtils.setValue(Arrays.asList("UserEdits", hashedEmail, ), request);
+            return new String[]{"REQUEST ADDED", email};
+        } catch (NullPointerException e) {
+            return new String[]{"INVALID TOKEN"};
         }
-        return "INVALID TOKEN";
     }
 }

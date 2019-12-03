@@ -20,22 +20,28 @@ public class RequestController {
     private Logger logger = LoggerFactory.getLogger(RequestController.class);
     private ObjectMapper mapper = new ObjectMapper();
 
-    @PostMapping(value = "/requests/createProfileRequest/{email}")
-    public ResponseEntity<?> setUserPersonalInfo(@RequestHeader("Authorization") String token, @PathVariable String email, @RequestBody String content) {
+    @PostMapping(value = "/requests/profileRequest/create")
+    public ResponseEntity<?> createUserPersonalInfoRequest(@RequestHeader("Authorization") String token, @RequestBody String content) {
         try {
             HashMap<?, ?> request = mapper.readValue(content, HashMap.class);
-            String requestStatus = service.createProfileRequest(token, email, request);
+            String[] requestStatus = service.createProfileRequest(token, request); //[requestId][email]
             ResponseEntity<?> responseEntity = new ResponseEntity<>(requestStatus, HttpStatus.OK);
 
-            if (requestStatus.equals("REQUEST ADDED"))
-                logger.info("User " + email + " created a request");
-            else
-                logger.warn("User " + email + " tried to create a request without being logged or having a token");
+            if (requestStatus[0].equals("REQUEST ADDED")) {
+                logger.info("User " + requestStatus[1] + " created a request with id: " + requestStatus[0]);
+            } else {
+                logger.warn("User " + requestStatus[1] + " tried to create a request without being logged or having a token");
+            }
 
             return responseEntity;
         } catch (JsonProcessingException e) {
             logger.error("error parsing login request content");
             return new ResponseEntity<>("ERROR", HttpStatus.OK);
         }
+    }
+
+    @PostMapping(value = "/requests/profileRequest/approve/{requestId}")
+    public ResponseEntity<?> approveUserPersonalInfoRequest(@RequestHeader("Authorization") String token, @PathVariable String requestId){
+        return null;
     }
 }
