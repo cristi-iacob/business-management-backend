@@ -6,7 +6,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ubb.proiectColectiv.businessmanagementbackend.service.SupervisorService;
 
 import java.util.List;
@@ -49,11 +52,10 @@ public class SupervisorController {
     public ResponseEntity<String> getUsersForSupervisor(@PathVariable("id") String id) {
         try {
             logger.info("Getting all users for a supervisor");
-            List< String > users = supervisorService.getUsersForSupervisor(id);
+            List<String> users = supervisorService.getUsersForSupervisor(id);
             if (users == null) {
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
-
             return new ResponseEntity<>(objectMapper.writeValueAsString(users), HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error at sending all user for supervisor" + e.getStackTrace());
@@ -61,9 +63,8 @@ public class SupervisorController {
         }
     }
 
-    @PostMapping(value = "/supervisor/setApproval")
-    public ResponseEntity<String> set_Request(@RequestBody String content){
-        //TODO endpoint for approving users
-        return null;
+    @PostMapping(value = "/supervisor/setApproval/{email}")
+    public ResponseEntity<String> set_Request(@PathVariable String email) {
+        return new ResponseEntity<>(supervisorService.approveUserRegistration(email), HttpStatus.OK);
     }
 }
