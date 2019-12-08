@@ -69,9 +69,7 @@ public class UserService {
         user.setFailedLoginCounter(0);
         user.setPassword(password);
         FirebaseUtils.setValue(Arrays.asList("User", "\"" + Objects.hash(email) + "\""), user);
-        String token = RandomStringUtils.randomAlphanumeric(15);
-        TokenService.getTokens().put(email, new ArrayList<>(Collections.singletonList(token)));
-        return token;
+       return "REGISTERED";
     }
 
     public String logout(String email, String token) {
