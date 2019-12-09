@@ -57,7 +57,7 @@ public class UserController {
             return responseEntity;
         } catch (JsonProcessingException e) {
             logger.error("error parsing login request content");
-            return new ResponseEntity<>("ERROR", HttpStatus.OK);
+            return new ResponseEntity<>("ERROR", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -82,7 +82,7 @@ public class UserController {
             return responseEntity;
         } catch (JsonProcessingException e) {
             logger.error("error parsing register request content");
-            return new ResponseEntity<>("ERROR", HttpStatus.OK);
+            return new ResponseEntity<>("ERROR", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -108,7 +108,7 @@ public class UserController {
             return responseEntity;
         } catch (JsonProcessingException e) {
             logger.error("error parsing logout request content");
-            return new ResponseEntity<>("ERROR", HttpStatus.OK);
+            return new ResponseEntity<>("ERROR", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -127,7 +127,7 @@ public class UserController {
             return new ResponseEntity<>(mapper.writeValueAsString(userReturned), HttpStatus.OK);
         } catch (JsonProcessingException e) {
             logger.error("error parsing getPersonalInfo request content");
-            return new ResponseEntity<>("ERROR", HttpStatus.OK);
+            return new ResponseEntity<>("ERROR", HttpStatus.BAD_REQUEST);
         }
     }
 

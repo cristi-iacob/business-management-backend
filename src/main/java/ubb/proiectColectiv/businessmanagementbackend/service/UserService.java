@@ -19,7 +19,7 @@ public class UserService {
         if (lastLoginAttempts.get(email) != null && System.currentTimeMillis() <= lastLoginAttempts.get(email) + 10 * 1000) //check if 10 seconds have passed since last login attempt
             return "SPAM";
 
-        String hashedEmail = "\"" + Objects.hash(email) + "\"";
+        String hashedEmail = String.valueOf(Objects.hash(email));
         Object userInDatabase = FirebaseUtils.getUpstreamData(Arrays.asList("User", hashedEmail)); //get user from Firebase as HashMap
         if (userInDatabase != null) {
             User user = mapper.convertValue(userInDatabase, User.class); //convert HashMap to User POJO
@@ -68,8 +68,8 @@ public class UserService {
         user.setEmail(email);
         user.setFailedLoginCounter(0);
         user.setPassword(password);
-        FirebaseUtils.setValue(Arrays.asList("User", "\"" + Objects.hash(email) + "\""), user);
-       return "REGISTERED";
+        FirebaseUtils.setValue(Arrays.asList("User", String.valueOf(Objects.hash(email))), user);
+        return "REGISTERED";
     }
 
     public String logout(String email, String token) {
@@ -81,7 +81,7 @@ public class UserService {
 
     public Object getPersonalData(String token, String email) {
         if (TokenService.containsToken(email, token)) {
-            return FirebaseUtils.getUpstreamData(Arrays.asList("User", "\"" + (Objects.hash(email) + "\"")));
+            return FirebaseUtils.getUpstreamData(Arrays.asList("User", String.valueOf(Objects.hash(email))));
         }
         return "INVALID TOKEN";
     }

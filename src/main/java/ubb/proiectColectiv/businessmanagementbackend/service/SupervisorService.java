@@ -40,7 +40,7 @@ public class SupervisorService {
     }
 
     public String approveUserRegistration(String email) {
-        FirebaseUtils.setValue(Arrays.asList("User", "\"" + Objects.hash(email) + "\"", "approvedStatus"), "true");
+        FirebaseUtils.setValue(Arrays.asList("User", String.valueOf(Objects.hash(email)), "approvedStatus"), "true");
         return "APPROVED";
     }
 }

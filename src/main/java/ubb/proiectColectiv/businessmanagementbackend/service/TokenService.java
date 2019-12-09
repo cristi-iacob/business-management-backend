@@ -1,7 +1,8 @@
 package ubb.proiectColectiv.businessmanagementbackend.service;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TokenService {
 
@@ -21,7 +22,7 @@ public class TokenService {
 
     public static String getKeyByToken(String token) {
         for (Map.Entry<String, List<String>> entry : tokens.entrySet()) {
-            for (String tokenInList : entry.getValue()){
+            for (String tokenInList : entry.getValue()) {
                 if (token.equals(tokenInList))
                     return entry.getKey();
             }

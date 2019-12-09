@@ -78,7 +78,7 @@ public class FirebaseUtils {
         ref.setValueAsync(newValue);
     }
 
-    public static void removeValue(List<String> parameters){
+    public static void removeValue(List<String> parameters) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
         for (String parameter : parameters) {

@@ -1,6 +1,6 @@
 language: java
 sudo: false
-./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-./mvnw test -B
+  ./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+  ./mvnw test -B
 script: mvnw clean verify
 #comment for pull request more comments

@@ -19,7 +19,7 @@ public class RequestService {
         try {
             HashMap<?, ?> request = mapper.readValue(content, HashMap.class);
             String email = TokenService.getKeyByToken(token);
-            String hashedEmail = "\"" + Objects.hash(email) + "\"";
+            String hashedEmail = String.valueOf(Objects.hash(email));
             long unixTime = System.currentTimeMillis() / 1000L;
             FirebaseUtils.setValue(Arrays.asList("User", hashedEmail, "edits", String.valueOf(unixTime)), request);
             return new String[]{"REQUEST ADDED", email, String.valueOf(unixTime)};
@@ -31,7 +31,7 @@ public class RequestService {
     public String[] approveProfileRequest(String token, String requestId) throws JsonProcessingException {
         try {
             String email = TokenService.getKeyByToken(token);
-            String hashedEmail = "\"" + Objects.hash(email) + "\"";
+            String hashedEmail = String.valueOf(Objects.hash(email));
             //get request
             Object requestInDatabase = FirebaseUtils.getUpstreamData(Arrays.asList("User", hashedEmail, "edits", requestId));
             HashMap<String, String> request = mapper.convertValue(requestInDatabase, HashMap.class);

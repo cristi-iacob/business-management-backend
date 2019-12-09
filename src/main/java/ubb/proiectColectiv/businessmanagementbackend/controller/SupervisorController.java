@@ -38,7 +38,7 @@ public class SupervisorController {
             logger.info("Sending all unapproved users!");
             return new ResponseEntity<>(objectMapper.writeValueAsString(supervisorService.getPendingRequests()), HttpStatus.OK);
         } catch (Exception e) {
-            logger.error("Error at sending all unapproved users!" + e.getStackTrace());
+            logger.error("Error at sending all unapproved users!");
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -58,7 +58,7 @@ public class SupervisorController {
             }
             return new ResponseEntity<>(objectMapper.writeValueAsString(users), HttpStatus.OK);
         } catch (Exception e) {
-            logger.error("Error at sending all user for supervisor" + e.getStackTrace());
+            logger.error("Error at sending all user for supervisor");
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
