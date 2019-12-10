@@ -2,6 +2,7 @@ package ubb.proiectColectiv.businessmanagementbackend.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.var;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import ubb.proiectColectiv.businessmanagementbackend.model.User;
 import ubb.proiectColectiv.businessmanagementbackend.service.UserService;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -128,6 +130,17 @@ public class UserController {
         } catch (JsonProcessingException e) {
             logger.error("error parsing getPersonalInfo request content");
             return new ResponseEntity<>("ERROR", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    // TO DO: add authentication check at controller level
+    @GetMapping(value="/users/{email}/projects")
+    public ResponseEntity<?> getAllUsers(@PathVariable String email) {
+        try {
+            var entries = service.getAllProjectExperienceEntriesForUserWithEmail(email);
+            return new ResponseEntity<>(entries, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Oops, something went wrong while retrieving project experience!", HttpStatus.BAD_REQUEST);
         }
     }
 
