@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ubb.proiectColectiv.businessmanagementbackend.model.LoginResponseValue;
+import ubb.proiectColectiv.businessmanagementbackend.model.ProjectExperienceEntry;
+import ubb.proiectColectiv.businessmanagementbackend.model.TokenTransport;
 import ubb.proiectColectiv.businessmanagementbackend.model.User;
 import ubb.proiectColectiv.businessmanagementbackend.service.UserService;
 
@@ -17,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 
 @RestController
+@CrossOrigin
 public class UserController {
 
     @Autowired
@@ -34,28 +38,30 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody String content) {
         try {
             User user = mapper.readValue(content, User.class);
-            String loginStatus = service.login(user.getEmail(), user.getPassword());
-            ResponseEntity<?> responseEntity = new ResponseEntity<>(loginStatus, HttpStatus.OK);
+            TokenTransport loginStatus = service.login(user.getEmail(), user.getPassword());
+            HttpStatus httpStatus = loginStatus.getResponse().equals(LoginResponseValue.SUCCESSFUL) ? HttpStatus.OK : HttpStatus.UNAUTHORIZED;
+            ResponseEntity<?> responseEntity = new ResponseEntity<>(loginStatus, httpStatus);
 
-            switch (loginStatus) {
-                case "SPAM":
+            switch (loginStatus.getResponse()) {
+                case SPAM:
                     logger.info("User " + user.getEmail() + " tried to log in again before 10 seconds have passed");
                     break;
-                case "BLOCKED":
+                case BLOCKED:
                     logger.info("User " + user.getEmail() + " tried to log in but is blocked");
                     break;
-                case "UNAPPROVED":
+                case UNAPPROVED:
                     logger.info("User " + user.getEmail() + " is unapproved");
                     break;
-                case "WRONG PASSWORD":
+                case WRONG_PASSWORD:
                     logger.info("User " + user.getEmail() + " tried to log in with wrong password");
                     break;
-                case "INEXISTENT":
+                case INEXISTENT:
                     logger.info("User " + user.getEmail() + " is not registered");
                     break;
                 default:
                     logger.info("User " + user.getEmail() + "logged in with token " + responseEntity.getBody());
             }
+
             return responseEntity;
         } catch (JsonProcessingException e) {
             logger.error("error parsing login request content");

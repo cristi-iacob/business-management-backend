@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.var;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
+import ubb.proiectColectiv.businessmanagementbackend.model.LoginResponseValue;
 import ubb.proiectColectiv.businessmanagementbackend.model.ProjectExperienceEntry;
+import ubb.proiectColectiv.businessmanagementbackend.model.TokenTransport;
 import ubb.proiectColectiv.businessmanagementbackend.model.User;
 import ubb.proiectColectiv.businessmanagementbackend.utils.FirebaseUtils;
 
@@ -18,9 +20,9 @@ public class UserService {
     private ObjectMapper mapper = new ObjectMapper();
     private HashMap<String, Long> lastLoginAttempts = new HashMap<>();
 
-    public String login(String email, String password) {
+    public TokenTransport login(String email, String password) {
         if (lastLoginAttempts.get(email) != null && System.currentTimeMillis() <= lastLoginAttempts.get(email) + 10 * 1000) //check if 10 seconds have passed since last login attempt
-            return "SPAM";
+            return new TokenTransport(null, LoginResponseValue.SPAM);
 
         String hashedEmail = String.valueOf(Objects.hash(email));
         Object userInDatabase = FirebaseUtils.getUpstreamData(Arrays.asList("User", hashedEmail)); //get user from Firebase as HashMap
@@ -30,7 +32,7 @@ public class UserService {
 
                 if (user.getBlockedStatus().equals(true)) {
                     lastLoginAttempts.put(email, System.currentTimeMillis()); //set time of last login attempt for current user
-                    return "BLOCKED";
+                    return new TokenTransport(null, LoginResponseValue.BLOCKED);
                 }
 
                 if (user.getFailedLoginCounter() != 0) {
@@ -43,20 +45,20 @@ public class UserService {
                         TokenService.getTokens().get(email).add(token);
                     else
                         TokenService.getTokens().put(email, new ArrayList<>(Collections.singletonList(token)));
-                    return token;
+                    return new TokenTransport(token, LoginResponseValue.SUCCESSFUL);
                 }
-                return "UNAPPROVED";
+                return new TokenTransport(null, LoginResponseValue.UNAPPROVED);
             }
 
             lastLoginAttempts.put(email, System.currentTimeMillis()); //set time of last login attempt for current user
             FirebaseUtils.setValue(Arrays.asList("User", hashedEmail, "failedLoginCounter"), user.getFailedLoginCounter() + 1);
             if (user.getFailedLoginCounter() == 2) { //this counter is the one before the incrementation
                 FirebaseUtils.setValue(Arrays.asList("User", hashedEmail, "blockedStatus"), Boolean.TRUE);
-                return "BLOCKED";
+                return new TokenTransport(null, LoginResponseValue.BLOCKED);
             }
-            return "WRONG PASSWORD";
+            return new TokenTransport(null, LoginResponseValue.WRONG_PASSWORD);
         }
-        return "INEXISTENT";
+        return new TokenTransport(null, LoginResponseValue.INEXISTENT);
     }
 
     public String register(String email, String password) {
