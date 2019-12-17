@@ -1,5 +1,6 @@
 package ubb.proiectColectiv.businessmanagementbackend.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.var;
 import org.slf4j.Logger;
@@ -41,7 +42,7 @@ public class SupervisorController {
             var approvalRequests = objectMapper.writeValueAsString(supervisorService.getRegistrationRequests());
             logger.info("Sending all approval requests!");
             return new ResponseEntity<>(approvalRequests, HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (JsonProcessingException e) {
             logger.error("Error at sending all unapproved users!");
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -67,7 +68,7 @@ public class SupervisorController {
     @PostMapping(value = "/supervisor/approveRegistrationRequest/{email}")
     public ResponseEntity<String> approveRegistrationRequest(@PathVariable String email) {
         // TODO: 17-Dec-19  Check if user is supervisor using the token from the header
-        return new ResponseEntity<>(supervisorService.setRequest(email), HttpStatus.OK);
+        return new ResponseEntity<>(supervisorService.approveRegistrationRequest(email), HttpStatus.OK);
     }
 
     // TODO: 17-Dec-19
