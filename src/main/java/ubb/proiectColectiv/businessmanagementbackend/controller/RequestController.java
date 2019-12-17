@@ -16,6 +16,7 @@ public class RequestController {
     private RequestService service;
     private Logger logger = LoggerFactory.getLogger(RequestController.class);
 
+    // TODO: 11-Dec-19 documentation
     @PostMapping(value = "/requests/profileRequest/create")
     public ResponseEntity<?> createUserPersonalInfoRequest(@RequestHeader("Authorization") String token, @RequestBody String content) {
         try {
@@ -35,6 +36,7 @@ public class RequestController {
         }
     }
 
+    // TODO: 11-Dec-19 documentation
     @PostMapping(value = "/requests/profileRequest/approve/{requestId}")
     public ResponseEntity<?> approveUserPersonalInfoRequest(@RequestHeader("Authorization") String token, @PathVariable String requestId) {
         try {

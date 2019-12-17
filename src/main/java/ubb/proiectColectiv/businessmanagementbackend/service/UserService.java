@@ -18,6 +18,7 @@ public class UserService {
     private ObjectMapper mapper = new ObjectMapper();
     private HashMap<String, Long> lastLoginAttempts = new HashMap<>();
 
+    // TODO: 11-Dec-19 documentation
     public String login(String email, String password) {
         if (lastLoginAttempts.get(email) != null && System.currentTimeMillis() <= lastLoginAttempts.get(email) + 10 * 1000) //check if 10 seconds have passed since last login attempt
             return "SPAM";
@@ -39,7 +40,7 @@ public class UserService {
 
                 if (user.getApprovedStatus().equals(true)) {
                     String token = RandomStringUtils.randomAlphanumeric(15);    //generate token for this user
-                    if (TokenService.containsKey(email))
+                    if (TokenService.containsEmail(email))
                         TokenService.getTokens().get(email).add(token);
                     else
                         TokenService.getTokens().put(email, new ArrayList<>(Collections.singletonList(token)));
@@ -59,6 +60,7 @@ public class UserService {
         return "INEXISTENT";
     }
 
+    // TODO: 11-Dec-19 documentation
     public String register(String email, String password) {
         Object userInDataBase = FirebaseUtils.getUpstreamData(Arrays.asList("User", String.valueOf(Objects.hash(email)), "password"));
 
@@ -75,6 +77,7 @@ public class UserService {
         return "REGISTERED";
     }
 
+    // TODO: 11-Dec-19 documentation
     public String logout(String email, String token) {
         if (TokenService.getTokens().get(email).remove(token))
             return "LOGGED OUT";
@@ -82,6 +85,7 @@ public class UserService {
             return "NOT LOGGED";
     }
 
+    // TODO: 11-Dec-19 documentation
     public Object getPersonalData(String token, String email) {
         if (TokenService.containsToken(email, token)) {
             return FirebaseUtils.getUpstreamData(Arrays.asList("User", String.valueOf(Objects.hash(email))));
@@ -125,6 +129,7 @@ public class UserService {
      *             ~-_           _-~          ~-_       _-~
      *                ~--______-~                ~-___-~
      */
+    // TODO: 11-Dec-19 documentation
     private List<ProjectExperienceEntry> getProjectExperienceEntriesForEmailHash(int hashedEmail) {
         var entries = new ArrayList<ProjectExperienceEntry>();
         var projectExperiences = FirebaseUtils.getCollectionAsUpstreamData(Arrays.asList("ProjectExperience"), HashMap.class);
@@ -148,6 +153,7 @@ public class UserService {
         return entries;
     }
 
+    // TODO: 11-Dec-19 documentation
     private ProjectExperienceEntry buildProjectExprienceEntry(Map<String, Object> entryFirstClassProperties, Map<String, Object> project, Map<String, Object> client, String industry, String consultingLevel) {
         return ProjectExperienceEntry.builder()
                 .startDate((Integer)entryFirstClassProperties.get("startDate"))

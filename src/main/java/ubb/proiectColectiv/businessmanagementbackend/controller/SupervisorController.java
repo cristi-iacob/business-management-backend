@@ -27,11 +27,13 @@ public class SupervisorController {
         objectMapper = new ObjectMapper();
     }
 
+    // TODO: 11-Dec-19 documentation
     @GetMapping(value = "/supervisor/approvals")
     public ResponseEntity<String> get_Approvals() {
         return null;
     }
 
+    // TODO: 11-Dec-19 documentation
     @GetMapping(value = "/supervisor/requests")
     public ResponseEntity<String> getRequests() {
         try {
@@ -43,11 +45,13 @@ public class SupervisorController {
         }
     }
 
+    // TODO: 11-Dec-19 documentation
     @GetMapping(value = "/supervisor/approvals/{id}")
     public ResponseEntity<String> getRequestsPer_User() {
         return null;
     }
 
+    // TODO: 11-Dec-19 documentation
     @GetMapping(value = "/supervisor/{id}/users")
     public ResponseEntity<String> getUsersForSupervisor(@PathVariable("id") String id) {
         try {
@@ -63,6 +67,7 @@ public class SupervisorController {
         }
     }
 
+    // TODO: 11-Dec-19 documentation
     @PostMapping(value = "/supervisor/setApproval/{email}")
     public ResponseEntity<String> set_Request(@PathVariable String email) {
         return new ResponseEntity<>(supervisorService.approveUserRegistration(email), HttpStatus.OK);
