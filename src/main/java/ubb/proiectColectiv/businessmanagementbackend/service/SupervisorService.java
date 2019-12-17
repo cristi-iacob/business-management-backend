@@ -9,7 +9,7 @@ import java.util.*;
 public class SupervisorService {
 
     // TODO: 11-Dec-19 documentation
-    public List<String> getPendingRequests() {
+    public List<String> getApprovalRequests() {
         List<String> retList = new ArrayList<>();
         HashMap<String, Object> users = (HashMap) FirebaseUtils.getUpstreamData(Arrays.asList("User"));
         for (String id : users.keySet()) {
@@ -44,7 +44,7 @@ public class SupervisorService {
     }
 
     // TODO: 11-Dec-19 documentation
-    public String approveUserRegistration(String email) {
+    public String setRequest(String email) {
         FirebaseUtils.setValue(Arrays.asList("User", String.valueOf(Objects.hash(email)), "approvedStatus"), "true");
         return "APPROVED";
     }

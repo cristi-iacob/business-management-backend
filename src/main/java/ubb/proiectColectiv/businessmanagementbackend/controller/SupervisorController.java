@@ -1,6 +1,7 @@
 package ubb.proiectColectiv.businessmanagementbackend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.var;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,20 +36,16 @@ public class SupervisorController {
 
     // TODO: 11-Dec-19 documentation
     @GetMapping(value = "/supervisor/requests")
-    public ResponseEntity<String> getRequests() {
+    public ResponseEntity<String> getApprovalRequests() {
         try {
-            logger.info("Sending all unapproved users!");
-            return new ResponseEntity<>(objectMapper.writeValueAsString(supervisorService.getPendingRequests()), HttpStatus.OK);
+            // TODO: 17-Dec-19 Check if user is supervisor using the token from the header
+            var approvalRequests = objectMapper.writeValueAsString(supervisorService.getApprovalRequests());
+            logger.info("Sending all approval requests!");
+            return new ResponseEntity<>(approvalRequests, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error at sending all unapproved users!");
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    // TODO: 11-Dec-19 documentation
-    @GetMapping(value = "/supervisor/approvals/{id}")
-    public ResponseEntity<String> getRequestsPer_User() {
-        return null;
     }
 
     // TODO: 11-Dec-19 documentation
@@ -68,8 +65,16 @@ public class SupervisorController {
     }
 
     // TODO: 11-Dec-19 documentation
-    @PostMapping(value = "/supervisor/setApproval/{email}")
-    public ResponseEntity<String> set_Request(@PathVariable String email) {
-        return new ResponseEntity<>(supervisorService.approveUserRegistration(email), HttpStatus.OK);
+    @PostMapping(value = "/supervisor/approveRegistrationRequest/{email}")
+    public ResponseEntity<String> approveRegistrationRequest(@PathVariable String email) {
+        // TODO: 17-Dec-19  Check if user is supervisor using the token from the header
+        return new ResponseEntity<>(supervisorService.setRequest(email), HttpStatus.OK);
+    }
+
+    // TODO: 17-Dec-19
+    @PostMapping(value = "/supervisor/rejectRegistrationRequest/{email}")
+    public ResponseEntity<String> rejectRegistrationRequest(@PathVariable String email) {
+        // TODO: 17-Dec-19  Check if user is supervisor using the token from the header
+        return null;
     }
 }
