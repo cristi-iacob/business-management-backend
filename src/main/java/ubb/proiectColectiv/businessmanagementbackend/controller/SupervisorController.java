@@ -33,11 +33,12 @@ public class SupervisorController {
     }
 
     // TODO: 11-Dec-19 documentation
-    @GetMapping(value = "/supervisor/requests")
-    public ResponseEntity<String> getApprovalRequests() {
+    @GetMapping(value = "/supervisor/registrationRequests")
+    public ResponseEntity<String> getRegistrationRequests() {
         try {
             // TODO: 17-Dec-19 Check if user is supervisor using the token from the header
-            var approvalRequests = objectMapper.writeValueAsString(supervisorService.getApprovalRequests());
+            //getKeyByToken()
+            var approvalRequests = objectMapper.writeValueAsString(supervisorService.getRegistrationRequests());
             logger.info("Sending all approval requests!");
             return new ResponseEntity<>(approvalRequests, HttpStatus.OK);
         } catch (Exception e) {

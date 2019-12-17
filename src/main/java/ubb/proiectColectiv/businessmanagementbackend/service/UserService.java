@@ -20,12 +20,7 @@ public class UserService {
     private ObjectMapper mapper = new ObjectMapper();
     private HashMap<String, Long> lastLoginAttempts = new HashMap<>();
 
-<<<<<<< HEAD
-    // TODO: 11-Dec-19 documentation
-    public String login(String email, String password) {
-=======
     public TokenTransport login(String email, String password) {
->>>>>>> eb6677386fd4fe10e92a9a2e2a24b316d1c122c8
         if (lastLoginAttempts.get(email) != null && System.currentTimeMillis() <= lastLoginAttempts.get(email) + 10 * 1000) //check if 10 seconds have passed since last login attempt
             return new TokenTransport(null, LoginResponseValue.SPAM);
 

@@ -9,9 +9,9 @@ import java.util.*;
 public class SupervisorService {
 
     // TODO: 11-Dec-19 documentation
-    public List<String> getApprovalRequests() {
+    public List<String> getRegistrationRequests() {
         List<String> retList = new ArrayList<>();
-        HashMap<String, Object> users = (HashMap) FirebaseUtils.getUpstreamData(Arrays.asList("User"));
+        HashMap<String, Object> users = (HashMap<String, Object>) FirebaseUtils.getUpstreamData(Arrays.asList("User"));
         for (String id : users.keySet()) {
             HashMap<String, Object> attributes = (HashMap) FirebaseUtils.getUpstreamData(Arrays.asList("User", id));
             if ((Boolean) attributes.get("approvedStatus") == false) {
