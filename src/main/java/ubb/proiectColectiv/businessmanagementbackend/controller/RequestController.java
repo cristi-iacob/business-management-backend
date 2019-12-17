@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import ubb.proiectColectiv.businessmanagementbackend.service.RequestService;
 
 @RestController
+@CrossOrigin
 public class RequestController {
 
     @Autowired
