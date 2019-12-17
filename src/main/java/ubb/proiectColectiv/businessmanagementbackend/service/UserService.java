@@ -5,7 +5,9 @@ import lombok.var;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import ubb.proiectColectiv.businessmanagementbackend.model.FullUserSpecification;
+import ubb.proiectColectiv.businessmanagementbackend.model.LoginResponseValue;
 import ubb.proiectColectiv.businessmanagementbackend.model.ProjectExperienceEntry;
+import ubb.proiectColectiv.businessmanagementbackend.model.TokenTransport;
 import ubb.proiectColectiv.businessmanagementbackend.model.User;
 import ubb.proiectColectiv.businessmanagementbackend.utils.FirebaseUtils;
 
@@ -19,9 +21,10 @@ public class UserService {
     private ObjectMapper mapper = new ObjectMapper();
     private HashMap<String, Long> lastLoginAttempts = new HashMap<>();
 
-    public String login(String email, String password) {
+    // TODO: 11-Dec-19 documentation
+    public TokenTransport login(String email, String password) {
         if (lastLoginAttempts.get(email) != null && System.currentTimeMillis() <= lastLoginAttempts.get(email) + 10 * 1000) //check if 10 seconds have passed since last login attempt
-            return "SPAM";
+            return new TokenTransport(null, LoginResponseValue.SPAM);
 
         String hashedEmail = String.valueOf(Objects.hash(email));
         Object userInDatabase = FirebaseUtils.getUpstreamData(Arrays.asList("User", hashedEmail)); //get user from Firebase as HashMap
@@ -31,7 +34,7 @@ public class UserService {
 
                 if (user.getBlockedStatus().equals(true)) {
                     lastLoginAttempts.put(email, System.currentTimeMillis()); //set time of last login attempt for current user
-                    return "BLOCKED";
+                    return new TokenTransport(null, LoginResponseValue.BLOCKED);
                 }
 
                 if (user.getFailedLoginCounter() != 0) {
@@ -40,26 +43,27 @@ public class UserService {
 
                 if (user.getApprovedStatus().equals(true)) {
                     String token = RandomStringUtils.randomAlphanumeric(15);    //generate token for this user
-                    if (TokenService.containsKey(email))
+                    if (TokenService.containsEmail(email))
                         TokenService.getTokens().get(email).add(token);
                     else
                         TokenService.getTokens().put(email, new ArrayList<>(Collections.singletonList(token)));
-                    return token;
+                    return new TokenTransport(token, LoginResponseValue.SUCCESSFUL);
                 }
-                return "UNAPPROVED";
+                return new TokenTransport(null, LoginResponseValue.UNAPPROVED);
             }
 
             lastLoginAttempts.put(email, System.currentTimeMillis()); //set time of last login attempt for current user
             FirebaseUtils.setValue(Arrays.asList("User", hashedEmail, "failedLoginCounter"), user.getFailedLoginCounter() + 1);
             if (user.getFailedLoginCounter() == 2) { //this counter is the one before the incrementation
                 FirebaseUtils.setValue(Arrays.asList("User", hashedEmail, "blockedStatus"), Boolean.TRUE);
-                return "BLOCKED";
+                return new TokenTransport(null, LoginResponseValue.BLOCKED);
             }
-            return "WRONG PASSWORD";
+            return new TokenTransport(null, LoginResponseValue.WRONG_PASSWORD);
         }
-        return "INEXISTENT";
+        return new TokenTransport(null, LoginResponseValue.INEXISTENT);
     }
 
+    // TODO: 11-Dec-19 documentation
     public String register(String email, String password) {
         Object userInDataBase = FirebaseUtils.getUpstreamData(Arrays.asList("User", String.valueOf(Objects.hash(email)), "password"));
 
@@ -76,6 +80,7 @@ public class UserService {
         return "REGISTERED";
     }
 
+    // TODO: 11-Dec-19 documentation
     public String logout(String email, String token) {
         if (TokenService.getTokens().get(email).remove(token))
             return "LOGGED OUT";
@@ -83,6 +88,7 @@ public class UserService {
             return "NOT LOGGED";
     }
 
+    // TODO: 11-Dec-19 documentation
     public Object getPersonalData(String token, String email) {
         if (TokenService.containsToken(email, token)) {
             return FirebaseUtils.getUpstreamData(Arrays.asList("User", String.valueOf(Objects.hash(email))));
@@ -104,6 +110,7 @@ public class UserService {
         return getProjectExperienceEntriesForEmailHash(hashedEmail);
     }
 
+    // TODO: 11-Dec-19 documentation
     private List<ProjectExperienceEntry> getProjectExperienceEntriesForEmailHash(int hashedEmail) {
         var entries = new ArrayList<ProjectExperienceEntry>();
         var projectExperiences = FirebaseUtils.getCollectionAsUpstreamData(Arrays.asList("ProjectExperience"), HashMap.class);
@@ -127,6 +134,7 @@ public class UserService {
         return entries;
     }
 
+    // TODO: 11-Dec-19 documentation
     private ProjectExperienceEntry buildProjectExprienceEntry(Map<String, Object> entryFirstClassProperties, Map<String, Object> project, Map<String, Object> client, String industry, String consultingLevel) {
         return ProjectExperienceEntry.builder()
                 .startDate((Integer)entryFirstClassProperties.get("startDate"))

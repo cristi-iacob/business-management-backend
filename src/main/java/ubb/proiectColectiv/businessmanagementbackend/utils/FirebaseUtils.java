@@ -25,6 +25,7 @@ public class FirebaseUtils {
     private static String databaseLink = "https://proiect-colectiv-85e07.firebaseio.com";
     private static Logger logger = LoggerFactory.getLogger(FirebaseUtils.class);
 
+    // TODO: 11-Dec-19 documentation
     @SuppressWarnings("Duplicates")
     public static Object getUpstreamData(List<String> parameters) {
         try {
@@ -73,6 +74,7 @@ public class FirebaseUtils {
         return null;
     }
 
+    // TODO: 11-Dec-19 documentation
     public static void setValue(List<String> parameters, Object newValue) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
@@ -84,6 +86,7 @@ public class FirebaseUtils {
         ref.setValueAsync(newValue);
     }
 
+    // TODO: 11-Dec-19 documentation
     public static void removeValue(List<String> parameters) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
@@ -122,6 +125,7 @@ public class FirebaseUtils {
         return null;
     }
 
+    // TODO: 11-Dec-19 documentation
     @SneakyThrows
     private static String fetchContentFromRoute(List<String> parameters) {
         var link = parameters.stream().reduce(databaseLink, (partial, current) -> partial + "/" + current) + ".json";

@@ -7,7 +7,9 @@ import java.util.*;
 
 @Service
 public class SupervisorService {
-    public List<String> getPendingRequests() {
+
+    // TODO: 11-Dec-19 documentation
+    public List<String> getApprovalRequests() {
         List<String> retList = new ArrayList<>();
         HashMap<String, Object> users = (HashMap) FirebaseUtils.getUpstreamData(Arrays.asList("User"));
         for (String id : users.keySet()) {
@@ -19,6 +21,7 @@ public class SupervisorService {
         return retList;
     }
 
+    // TODO: 11-Dec-19 documentation
     private Boolean isSupervisor(String id) {
         HashMap<String, Object> user = (HashMap) FirebaseUtils.getUpstreamData(Arrays.asList("User", id));
         if (user.get("roleId").toString().compareTo("2") == 0) {
@@ -27,6 +30,7 @@ public class SupervisorService {
         return false;
     }
 
+    // TODO: 11-Dec-19 documentation
     public List<String> getUsersForSupervisor(String id) {
         List<String> retList = new ArrayList<>();
         if (!isSupervisor(id)) {
@@ -39,7 +43,8 @@ public class SupervisorService {
         return retList;
     }
 
-    public String approveUserRegistration(String email) {
+    // TODO: 11-Dec-19 documentation
+    public String setRequest(String email) {
         FirebaseUtils.setValue(Arrays.asList("User", String.valueOf(Objects.hash(email)), "approvedStatus"), "true");
         return "APPROVED";
     }

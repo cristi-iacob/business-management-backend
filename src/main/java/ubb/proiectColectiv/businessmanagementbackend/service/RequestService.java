@@ -15,6 +15,7 @@ public class RequestService {
 
     private ObjectMapper mapper = new ObjectMapper();
 
+    // TODO: 11-Dec-19 documentation
     public String[] createProfileRequest(String token, String content) throws JsonProcessingException {
         try {
             HashMap<?, ?> request = mapper.readValue(content, HashMap.class);
@@ -28,6 +29,7 @@ public class RequestService {
         }
     }
 
+    // TODO: 11-Dec-19 documentation
     public String[] approveProfileRequest(String token, String requestId) throws JsonProcessingException {
         try {
             String email = TokenService.getKeyByToken(token);
