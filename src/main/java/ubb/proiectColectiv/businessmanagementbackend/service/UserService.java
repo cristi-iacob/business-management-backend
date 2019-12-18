@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.var;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
+import ubb.proiectColectiv.businessmanagementbackend.model.FullUserSpecification;
 import ubb.proiectColectiv.businessmanagementbackend.model.LoginResponseValue;
 import ubb.proiectColectiv.businessmanagementbackend.model.ProjectExperienceEntry;
 import ubb.proiectColectiv.businessmanagementbackend.model.TokenTransport;
@@ -20,6 +21,7 @@ public class UserService {
     private ObjectMapper mapper = new ObjectMapper();
     private HashMap<String, Long> lastLoginAttempts = new HashMap<>();
 
+    // TODO: 11-Dec-19 documentation
     public TokenTransport login(String email, String password) {
         if (lastLoginAttempts.get(email) != null && System.currentTimeMillis() <= lastLoginAttempts.get(email) + 10 * 1000) //check if 10 seconds have passed since last login attempt
             return new TokenTransport(null, LoginResponseValue.SPAM);
@@ -94,7 +96,6 @@ public class UserService {
         return "INVALID TOKEN";
     }
 
-
     /**
      * Retrieves the project experience entries which match the specified email.
      * @param email
@@ -108,28 +109,6 @@ public class UserService {
         return getProjectExperienceEntriesForEmailHash(hashedEmail);
     }
 
-    /**
-     *  Dragi colegi imi pare rau pentru tigania asta dar nu stiu cum bunul si ocrotitorul Dumnezeu sa fac altfel
-     *  Va urez o infinitate de clipe frumoase alaturi de cei dragi (gen prieteni, familie si alte categorii de non-dusmani)
-     *
-     *            /^\/^\
-     *          _|__|  O|
-     * \/     /~     \_/ \
-     *  \____|__________/  \
-     *         \_______      \
-     *                 `\     \                 \
-     *                   |     |                  \
-     *                  /      /                    \
-     *                 /     /                       \\
-     *               /      /                         \ \
-     *              /     /                            \  \
-     *            /     /             _----_            \   \
-     *           /     /           _-~      ~-_         |   |
-     *          (      (        _-~    _--_    ~-_     _/   |
-     *           \      ~-____-~    _-~    ~-_    ~-_-~    /
-     *             ~-_           _-~          ~-_       _-~
-     *                ~--______-~                ~-___-~
-     */
     // TODO: 11-Dec-19 documentation
     private List<ProjectExperienceEntry> getProjectExperienceEntriesForEmailHash(int hashedEmail) {
         var entries = new ArrayList<ProjectExperienceEntry>();
@@ -168,5 +147,10 @@ public class UserService {
                 .clientAddress((String)client.get("address"))
                 .clientName((String)client.get("name"))
                 .build();
+    }
+
+    public void registerPendingChangeForUserWitHEmail(FullUserSpecification fullUserSpecification, String userEmail) {
+        List path = Arrays.asList("User", String.valueOf(Objects.hash(userEmail)), "edits");
+        FirebaseUtils.setValue(path, fullUserSpecification);
     }
 }

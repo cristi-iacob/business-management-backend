@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ubb.proiectColectiv.businessmanagementbackend.model.FullUserSpecification;
 import ubb.proiectColectiv.businessmanagementbackend.model.LoginResponseValue;
 import ubb.proiectColectiv.businessmanagementbackend.model.ProjectExperienceEntry;
 import ubb.proiectColectiv.businessmanagementbackend.model.TokenTransport;
@@ -149,6 +150,12 @@ public class UserController {
         } catch (Exception e) {
             return new ResponseEntity<>("Oops, something went wrong while retrieving project experience!", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PostMapping(value="/users/{email}/create-pending-change")
+    public ResponseEntity<?> registerPendingChange(@PathVariable String email, @RequestBody FullUserSpecification userSpecification) {
+        service.registerPendingChangeForUserWitHEmail(userSpecification, email);
+        return null;
     }
 
 }
