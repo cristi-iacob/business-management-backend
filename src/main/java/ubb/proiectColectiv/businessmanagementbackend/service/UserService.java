@@ -96,7 +96,6 @@ public class UserService {
         return "INVALID TOKEN";
     }
 
-
     /**
      * Retrieves the project experience entries which match the specified email.
      * @param email

@@ -141,7 +141,7 @@ public class UserController {
     }
 
     // TODO: 11-Dec-19 documentation
-    // TO DO: add authentication check at controller level
+    // TODO: 17-Dec-19 add authentication check at controller level
     @GetMapping(value="/users/{email}/projects")
     public ResponseEntity<?> getAllUsers(@PathVariable String email) {
         try {

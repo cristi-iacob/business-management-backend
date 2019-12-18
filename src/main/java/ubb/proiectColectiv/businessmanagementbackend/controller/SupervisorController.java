@@ -1,5 +1,6 @@
 package ubb.proiectColectiv.businessmanagementbackend.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.var;
 import org.slf4j.Logger;
@@ -12,8 +13,8 @@ import ubb.proiectColectiv.businessmanagementbackend.service.SupervisorService;
 
 import java.util.List;
 
-@RestController
 @CrossOrigin
+@RestController
 public class SupervisorController {
 
     @Autowired
@@ -32,15 +33,19 @@ public class SupervisorController {
         return null;
     }
 
-    // TODO: 11-Dec-19 documentation
-    @GetMapping(value = "/supervisor/requests")
-    public ResponseEntity<String> getApprovalRequests() {
+    /**
+     * Gets all unapproved users
+     * @return Returns all unapporved users in the body of the request
+     */
+    @GetMapping(value = "/supervisor/registrationRequests")
+    public ResponseEntity<String> getRegistrationRequests() {
         try {
             // TODO: 17-Dec-19 Check if user is supervisor using the token from the header
-            var approvalRequests = objectMapper.writeValueAsString(supervisorService.getApprovalRequests());
+            //getKeyByToken()
+            var approvalRequests = objectMapper.writeValueAsString(supervisorService.getRegistrationRequests());
             logger.info("Sending all approval requests!");
             return new ResponseEntity<>(approvalRequests, HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (JsonProcessingException e) {
             logger.error("Error at sending all unapproved users!");
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -62,17 +67,39 @@ public class SupervisorController {
         }
     }
 
-    // TODO: 11-Dec-19 documentation
-    @PostMapping(value = "/supervisor/approveRegistrationRequest/{email}")
-    public ResponseEntity<String> approveRegistrationRequest(@PathVariable String email) {
+    /**
+     * Calls Service change the appreoved Status of a user
+     * @param json hashedEmail to be approved
+     * @return Status of Ok or Internal_Server_Error
+     */
+    @PutMapping(value = "/supervisor/approveRegistrationRequest")
+    public ResponseEntity<String> approveRegistrationRequest(@RequestBody String json) {
+        try {
         // TODO: 17-Dec-19  Check if user is supervisor using the token from the header
-        return new ResponseEntity<>(supervisorService.setRequest(email), HttpStatus.OK);
+            supervisorService.approveRegistrationRequest(json);
+            logger.info("Registration Request of user " + json + " has been approved");
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        } catch (NullPointerException | JsonProcessingException e) {
+            logger.error("Error at approving user " + json);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    // TODO: 17-Dec-19
-    @PostMapping(value = "/supervisor/rejectRegistrationRequest/{email}")
-    public ResponseEntity<String> rejectRegistrationRequest(@PathVariable String email) {
-        // TODO: 17-Dec-19  Check if user is supervisor using the token from the header
-        return null;
+    /**
+     *  Calls Service to deletes user from Firebase
+     * @param json Json containing a users hashed email
+     * @return Status of Ok or Internal_Server_Error
+     */
+    @PutMapping(value = "/supervisor/rejectRegistrationRequest")
+    public ResponseEntity<String> rejectRegistrationRequest(@RequestBody String json) {
+        try {
+            // TODO: 17-Dec-19  Check if user is supervisor using the token from the header
+            supervisorService.rejectRegistrationRequest(json);
+            logger.info("Registration Request of user " + json + " has been rejected");
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        } catch (NullPointerException | JsonProcessingException e) {
+            logger.error("Error at rejecting user " + json);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
