@@ -69,32 +69,32 @@ public class SupervisorController {
 
     /**
      *
-     * @param hashedEmail hashedEmail to be approved
+     * @param json hashedEmail to be approved
      * @return A confirmation if the approval was successful, an error messege otherwise
      */
-    @PutMapping(value = "/supervisor/approveRegistrationRequest/{hashedEmail}")
-    public ResponseEntity<String> approveRegistrationRequest(@PathVariable String hashedEmail) {
+    @PutMapping(value = "/supervisor/approveRegistrationRequest")
+    public ResponseEntity<String> approveRegistrationRequest(@RequestBody String json) {
         try {
         // TODO: 17-Dec-19  Check if user is supervisor using the token from the header
-            supervisorService.approveRegistrationRequest(hashedEmail);
-            logger.info("Registration Request of user " + hashedEmail + " has been approved");
+            supervisorService.approveRegistrationRequest(json);
+            logger.info("Registration Request of user " + json + " has been approved");
             return new ResponseEntity<>(null, HttpStatus.OK);
-        } catch (NullPointerException e) {
-            logger.error("Error at approving user " + hashedEmail);
+        } catch (NullPointerException | JsonProcessingException e) {
+            logger.error("Error at approving user " + json);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     // TODO: 17-Dec-19
-    @PutMapping(value = "/supervisor/rejectRegistrationRequest/{hashedEmail}")
-    public ResponseEntity<String> rejectRegistrationRequest(@PathVariable String hashedEmail) {
+    @PutMapping(value = "/supervisor/rejectRegistrationRequest")
+    public ResponseEntity<String> rejectRegistrationRequest(@RequestBody String json) {
         try {
             // TODO: 17-Dec-19  Check if user is supervisor using the token from the header
-            supervisorService.rejectRegistrationRequest(hashedEmail);
-            logger.info("Registration Request of user " + hashedEmail + " has been rejected");
+            supervisorService.rejectRegistrationRequest(json);
+            logger.info("Registration Request of user " + json + " has been rejected");
             return new ResponseEntity<>(null, HttpStatus.OK);
-        } catch (NullPointerException e) {
-            logger.error("Error at rejecting user " + hashedEmail);
+        } catch (NullPointerException | JsonProcessingException e) {
+            logger.error("Error at rejecting user " + json);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

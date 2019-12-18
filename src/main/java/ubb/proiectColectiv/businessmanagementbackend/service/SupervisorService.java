@@ -15,7 +15,6 @@ public class SupervisorService {
 
     // TODO: 11-Dec-19 documentation
     public List<User> getRegistrationRequests() {
-
         List<User> unregisteredUsers = new ArrayList<>();
         HashMap<String, User> users = (HashMap) FirebaseUtils.getUpstreamData(Arrays.asList("User"));
         User user;
@@ -52,12 +51,14 @@ public class SupervisorService {
     }
 
     // TODO: 11-Dec-19 documentation
-    public void approveRegistrationRequest(String hashedEmail) {
-        FirebaseUtils.setValue(Arrays.asList("User", hashedEmail, "approvedStatus"), true);
+    public void approveRegistrationRequest(String json) throws JsonProcessingException {
+        HashMap<String, String> map = mapper.readValue(json, HashMap.class);
+        FirebaseUtils.setValue(Arrays.asList("User", map.get("hashedEmail"), "approvedStatus"), true);
     }
 
-    // TODO: 18-Dec-19 documentation 
-    public void rejectRegistrationRequest(String hashedEmail) {
-        FirebaseUtils.removeValue(Arrays.asList("User", hashedEmail));
+    // TODO: 18-Dec-19 documentation
+    public void rejectRegistrationRequest(String json) throws JsonProcessingException {
+        HashMap<String, String> map = mapper.readValue(json, HashMap.class);
+        FirebaseUtils.removeValue(Arrays.asList("User", map.get("hashedEmail")));
     }
 }
