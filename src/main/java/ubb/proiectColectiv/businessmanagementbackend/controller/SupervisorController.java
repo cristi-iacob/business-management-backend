@@ -13,8 +13,8 @@ import ubb.proiectColectiv.businessmanagementbackend.service.SupervisorService;
 
 import java.util.List;
 
-@RestController
 @CrossOrigin
+@RestController
 public class SupervisorController {
 
     @Autowired
@@ -68,9 +68,9 @@ public class SupervisorController {
     }
 
     /**
-     *
+     * Calls Service change the appreoved Status of a user
      * @param json hashedEmail to be approved
-     * @return A confirmation if the approval was successful, an error messege otherwise
+     * @return Status of Ok or Internal_Server_Error
      */
     @PutMapping(value = "/supervisor/approveRegistrationRequest")
     public ResponseEntity<String> approveRegistrationRequest(@RequestBody String json) {
@@ -85,7 +85,11 @@ public class SupervisorController {
         }
     }
 
-    // TODO: 17-Dec-19
+    /**
+     *  Calls Service to deletes user from Firebase
+     * @param json Json containing a users hashed email
+     * @return Status of Ok or Internal_Server_Error
+     */
     @PutMapping(value = "/supervisor/rejectRegistrationRequest")
     public ResponseEntity<String> rejectRegistrationRequest(@RequestBody String json) {
         try {

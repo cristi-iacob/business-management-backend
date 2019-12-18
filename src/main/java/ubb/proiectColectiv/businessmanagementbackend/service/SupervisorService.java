@@ -13,7 +13,10 @@ public class SupervisorService {
 
     private ObjectMapper mapper = new ObjectMapper();
 
-    // TODO: 11-Dec-19 documentation
+    /**
+     * Retrieves users which have approvedStatus == false
+     * @return list of users with appreovedStatus == false
+     */
     public List<User> getRegistrationRequests() {
         List<User> unregisteredUsers = new ArrayList<>();
         HashMap<String, User> users = (HashMap) FirebaseUtils.getUpstreamData(Arrays.asList("User"));
@@ -28,9 +31,13 @@ public class SupervisorService {
         return unregisteredUsers;
     }
 
-    // TODO: 11-Dec-19 documentation
-    private Boolean isSupervisor(String id) {
-        HashMap<String, Object> user = (HashMap) FirebaseUtils.getUpstreamData(Arrays.asList("User", id));
+    /**
+     * Checks if user is a supervisor
+     * @param hashedEmail
+     * @return true if user is supervisor, false otherwise
+     */
+    private Boolean isSupervisor(String hashedEmail) {
+        HashMap<String, Object> user = (HashMap) FirebaseUtils.getUpstreamData(Arrays.asList("User", hashedEmail));
         if (user.get("roleId").toString().compareTo("2") == 0) {
             return true;
         }
@@ -50,13 +57,21 @@ public class SupervisorService {
         return retList;
     }
 
-    // TODO: 11-Dec-19 documentation
+    /**
+     * Sets users approvedStatus to true
+     * @param json Json containing users hashed email
+     * @throws JsonProcessingException If the recieved json is incorrect
+     */
     public void approveRegistrationRequest(String json) throws JsonProcessingException {
         HashMap<String, String> map = mapper.readValue(json, HashMap.class);
         FirebaseUtils.setValue(Arrays.asList("User", map.get("hashedEmail"), "approvedStatus"), true);
     }
 
-    // TODO: 18-Dec-19 documentation
+    /**
+     * Deletes user from Firebase
+     * @param json Json containing users hashed email
+     * @throws JsonProcessingException If the recieved json is incorrect
+     */
     public void rejectRegistrationRequest(String json) throws JsonProcessingException {
         HashMap<String, String> map = mapper.readValue(json, HashMap.class);
         FirebaseUtils.removeValue(Arrays.asList("User", map.get("hashedEmail")));
