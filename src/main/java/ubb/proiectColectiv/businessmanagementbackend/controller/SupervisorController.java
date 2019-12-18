@@ -33,7 +33,10 @@ public class SupervisorController {
         return null;
     }
 
-    // TODO: 11-Dec-19 documentation
+    /**
+     * Gets all unapproved users
+     * @return Returns all unapporved users in the body of the request
+     */
     @GetMapping(value = "/supervisor/registrationRequests")
     public ResponseEntity<String> getRegistrationRequests() {
         try {
@@ -64,17 +67,35 @@ public class SupervisorController {
         }
     }
 
-    // TODO: 11-Dec-19 documentation
-    @PostMapping(value = "/supervisor/approveRegistrationRequest/{email}")
-    public ResponseEntity<String> approveRegistrationRequest(@PathVariable String email) {
+    /**
+     *
+     * @param hashedEmail hashedEmail to be approved
+     * @return A confirmation if the approval was successful, an error messege otherwise
+     */
+    @PostMapping(value = "/supervisor/approveRegistrationRequest/{hashedEmail}")
+    public ResponseEntity<String> approveRegistrationRequest(@PathVariable String hashedEmail) {
+        try {
         // TODO: 17-Dec-19  Check if user is supervisor using the token from the header
-        return new ResponseEntity<>(supervisorService.approveRegistrationRequest(email), HttpStatus.OK);
+            supervisorService.approveRegistrationRequest(hashedEmail);
+            logger.info("Registration Request of user " + hashedEmail + " has been approved");
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        } catch (NullPointerException e) {
+            logger.error("Error at approving user " + hashedEmail);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // TODO: 17-Dec-19
-    @PostMapping(value = "/supervisor/rejectRegistrationRequest/{email}")
-    public ResponseEntity<String> rejectRegistrationRequest(@PathVariable String email) {
-        // TODO: 17-Dec-19  Check if user is supervisor using the token from the header
-        return null;
+    @PostMapping(value = "/supervisor/rejectRegistrationRequest/{hashedEmail}")
+    public ResponseEntity<String> rejectRegistrationRequest(@PathVariable String hashedEmail) {
+        try {
+            // TODO: 17-Dec-19  Check if user is supervisor using the token from the header
+            supervisorService.rejectRegistrationRequest(hashedEmail);
+            logger.info("Registration Request of user " + hashedEmail + " has been rejected");
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        } catch (NullPointerException e) {
+            logger.error("Error at rejecting user " + hashedEmail);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

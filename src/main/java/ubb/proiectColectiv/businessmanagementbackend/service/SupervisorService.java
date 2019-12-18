@@ -14,17 +14,16 @@ public class SupervisorService {
     private ObjectMapper mapper = new ObjectMapper();
 
     // TODO: 11-Dec-19 documentation
-    public HashMap<String, User> getRegistrationRequests() {
+    public List<User> getRegistrationRequests() {
 
-        HashMap<String, User> unregisteredUsers = new HashMap<>();
+        List<User> unregisteredUsers = new ArrayList<>();
         HashMap<String, User> users = (HashMap) FirebaseUtils.getUpstreamData(Arrays.asList("User"));
-        User unregisteredUser = new User();
         User user;
-        System.out.println(users);
         for (Map.Entry<String, User> entry : users.entrySet()) {
             user = mapper.convertValue(entry.getValue(), User.class);
             if (user.getApprovedStatus() == false) {
-                unregisteredUsers.put(entry.getKey(), user);
+                user.setHashedEmail(entry.getKey());
+                unregisteredUsers.add(user);
             }
         }
         return unregisteredUsers;
@@ -53,8 +52,11 @@ public class SupervisorService {
     }
 
     // TODO: 11-Dec-19 documentation
-    public String approveRegistrationRequest(String email) {
-        FirebaseUtils.setValue(Arrays.asList("User", String.valueOf(Objects.hash(email)), "approvedStatus"), "true");
-        return "APPROVED";
+    public void approveRegistrationRequest(String hashedEmail) {
+        FirebaseUtils.setValue(Arrays.asList("User", hashedEmail, "approvedStatus"), true);
+    }
+
+    public void rejectRegistrationRequest(String hashedEmail) {
+        FirebaseUtils.removeValue(Arrays.asList("User", hashedEmail));
     }
 }
