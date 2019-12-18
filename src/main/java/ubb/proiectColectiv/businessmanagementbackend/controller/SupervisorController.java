@@ -72,7 +72,7 @@ public class SupervisorController {
      * @param hashedEmail hashedEmail to be approved
      * @return A confirmation if the approval was successful, an error messege otherwise
      */
-    @PostMapping(value = "/supervisor/approveRegistrationRequest/{hashedEmail}")
+    @PutMapping(value = "/supervisor/approveRegistrationRequest/{hashedEmail}")
     public ResponseEntity<String> approveRegistrationRequest(@PathVariable String hashedEmail) {
         try {
         // TODO: 17-Dec-19  Check if user is supervisor using the token from the header
@@ -86,7 +86,7 @@ public class SupervisorController {
     }
 
     // TODO: 17-Dec-19
-    @PostMapping(value = "/supervisor/rejectRegistrationRequest/{hashedEmail}")
+    @PutMapping(value = "/supervisor/rejectRegistrationRequest/{hashedEmail}")
     public ResponseEntity<String> rejectRegistrationRequest(@PathVariable String hashedEmail) {
         try {
             // TODO: 17-Dec-19  Check if user is supervisor using the token from the header
