@@ -56,6 +56,7 @@ public class SupervisorService {
         FirebaseUtils.setValue(Arrays.asList("User", hashedEmail, "approvedStatus"), true);
     }
 
+    // TODO: 18-Dec-19 documentation 
     public void rejectRegistrationRequest(String hashedEmail) {
         FirebaseUtils.removeValue(Arrays.asList("User", hashedEmail));
     }
