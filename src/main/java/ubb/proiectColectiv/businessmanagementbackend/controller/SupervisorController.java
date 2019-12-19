@@ -13,6 +13,7 @@ import ubb.proiectColectiv.businessmanagementbackend.service.SupervisorService;
 import ubb.proiectColectiv.businessmanagementbackend.service.TokenService;
 
 import java.util.List;
+import java.util.Objects;
 
 @CrossOrigin
 @RestController
@@ -42,9 +43,8 @@ public class SupervisorController {
     @GetMapping(value = "/supervisor/registrationRequests")
     public ResponseEntity<String> getRegistrationRequests(@RequestHeader String token) {
         try {
+            System.out.println("token = " + token);
             String email = TokenService.getKeyByToken(token);
-            if (!supervisorService.isSupervisor(email))
-                throw new Exception("User that requested this is not a supervisor");
             var approvalRequests = objectMapper.writeValueAsString(supervisorService.getRegistrationRequests());
             logger.info("Sending all approval requests!");
             return new ResponseEntity<>(approvalRequests, HttpStatus.OK);
@@ -55,6 +55,25 @@ public class SupervisorController {
         } catch (Exception e) {
             logger.error(e.getMessage());
             logger.error("Error at sending all unapproved users!");
+        }
+        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    // TODO: 19-Dec-19 documentation
+    @GetMapping(value = "/supervisor/check")
+    public ResponseEntity<String> checkIfSupervisor(@RequestHeader("Authorization") String token) {
+        try {
+            String email = TokenService.getKeyByToken(token);
+            if (supervisorService.isSupervisor(String.valueOf(Objects.hash(email)))) {
+                logger.info("User is supervisor");
+                return new ResponseEntity<>(null, HttpStatus.OK);
+            } else {
+                throw new Exception("User that requested this is not a supervisor");
+            }
+        } catch (NullPointerException e) {
+            logger.error("Token is not in the tokens list");
+        } catch (Exception e) {
+            logger.error(e.getMessage() + " error at checking if user is a supervisor");
         }
         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }

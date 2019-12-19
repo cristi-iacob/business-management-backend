@@ -51,8 +51,9 @@ public class TokenService {
     public static String getKeyByToken(String token) {
         for (Map.Entry<String, List<String>> entry : tokens.entrySet()) {
             for (String tokenInList : entry.getValue()) {
-                if (token.equals(tokenInList))
+                if (token.equals(tokenInList)) {
                     return entry.getKey();
+                }
             }
         }
         throw new NullPointerException("No key with that value");
