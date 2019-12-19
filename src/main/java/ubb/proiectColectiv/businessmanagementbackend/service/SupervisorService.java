@@ -36,7 +36,7 @@ public class SupervisorService {
      * @param hashedEmail
      * @return true if user is supervisor, false otherwise
      */
-    private Boolean isSupervisor(String hashedEmail) {
+    public Boolean isSupervisor(String hashedEmail) {
         HashMap<String, Object> user = (HashMap) FirebaseUtils.getUpstreamData(Arrays.asList("User", hashedEmail));
         if (user.get("roleId").toString().compareTo("2") == 0) {
             return true;

@@ -10,7 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ubb.proiectColectiv.businessmanagementbackend.service.SupervisorService;
+import ubb.proiectColectiv.businessmanagementbackend.service.TokenService;
 
+import javax.validation.constraints.Null;
 import java.util.List;
 
 @CrossOrigin
@@ -35,20 +37,27 @@ public class SupervisorController {
 
     /**
      * Gets all unapproved users
+     *
      * @return Returns all unapporved users in the body of the request
      */
     @GetMapping(value = "/supervisor/registrationRequests")
-    public ResponseEntity<String> getRegistrationRequests() {
+    public ResponseEntity<String> getRegistrationRequests(@RequestHeader String token) {
         try {
-            // TODO: 17-Dec-19 Check if user is supervisor using the token from the header
-            //getKeyByToken()
+            String email = TokenService.getKeyByToken(token);
+            if (!supervisorService.isSupervisor(email))
+                throw new Exception("User that requested this is not a supervisor");
             var approvalRequests = objectMapper.writeValueAsString(supervisorService.getRegistrationRequests());
             logger.info("Sending all approval requests!");
             return new ResponseEntity<>(approvalRequests, HttpStatus.OK);
         } catch (JsonProcessingException e) {
+            logger.error("Error at processing the json!");
+        } catch (NullPointerException e) {
+            logger.error("Token is not in the tokens list");
+        } catch (Exception e) {
+            logger.error(e.getMessage());
             logger.error("Error at sending all unapproved users!");
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     // TODO: 11-Dec-19 documentation
@@ -69,13 +78,14 @@ public class SupervisorController {
 
     /**
      * Calls Service change the appreoved Status of a user
+     *
      * @param json hashedEmail to be approved
      * @return Status of Ok or Internal_Server_Error
      */
     @PutMapping(value = "/supervisor/approveRegistrationRequest")
     public ResponseEntity<String> approveRegistrationRequest(@RequestBody String json) {
         try {
-        // TODO: 17-Dec-19  Check if user is supervisor using the token from the header
+            // TODO: 17-Dec-19  Check if user is supervisor using the token from the header
             supervisorService.approveRegistrationRequest(json);
             logger.info("Registration Request of user " + json + " has been approved");
             return new ResponseEntity<>(null, HttpStatus.OK);
@@ -86,7 +96,8 @@ public class SupervisorController {
     }
 
     /**
-     *  Calls Service to deletes user from Firebase
+     * Calls Service to deletes user from Firebase
+     *
      * @param json Json containing a users hashed email
      * @return Status of Ok or Internal_Server_Error
      */

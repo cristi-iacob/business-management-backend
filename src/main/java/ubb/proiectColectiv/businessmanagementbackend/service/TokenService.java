@@ -1,15 +1,20 @@
 package ubb.proiectColectiv.businessmanagementbackend.service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TokenService {
 
-    private static Map<String, List<String>> tokens = new HashMap<>();
+    private static Map<String, List<String>> tokens;
+
+    static {
+        tokens = new HashMap<>();
+        tokens.put("supervisor@test.com", new ArrayList<>(Arrays.asList("100")));
+        tokens.put("user@test.com", new ArrayList<>(Arrays.asList("200")));
+    }
 
     /**
      * Retrieved all tokens as pairs of Email : [Token]
+     *
      * @return all active tokens and their emails
      */
     public static Map<String, List<String>> getTokens() {
@@ -18,6 +23,7 @@ public class TokenService {
 
     /**
      * Checks if the token is active for a respective user
+     *
      * @param email users email
      * @param token token to check
      * @return true if the token exists in the users token list, false if not
@@ -28,8 +34,9 @@ public class TokenService {
 
     /**
      * Checks if the email exists
+     *
      * @param email users email
-     * @return  true if it exists, false if not
+     * @return true if it exists, false if not
      */
     public static boolean containsEmail(String email) {
         return tokens.containsKey(email);
@@ -37,6 +44,7 @@ public class TokenService {
 
     /**
      * Retrueves the email of the user that has that repective token active
+     *
      * @param token token to search for
      * @return the email if the token exists, throws NullPointerException otherwise
      */

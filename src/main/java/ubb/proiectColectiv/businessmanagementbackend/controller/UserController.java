@@ -60,7 +60,7 @@ public class UserController {
                     logger.info("User " + user.getEmail() + " is not registered");
                     break;
                 default:
-                    logger.info("User " + user.getEmail() + "logged in with token " + responseEntity.getBody());
+                    logger.info("User " + user.getEmail() + "logged in with token " + loginStatus.getToken());
             }
 
             return responseEntity;
@@ -86,7 +86,7 @@ public class UserController {
             if (registerStatus.equals("EXISTS")) {
                 logger.info("User " + user.getEmail() + " is already registered");
             } else {
-                logger.info("User " + user.getEmail() + " registered as " + Objects.hash(user.getEmail()) + " with token " + responseEntity.getBody());
+                logger.info("User " + user.getEmail() + " registered as " + Objects.hash(user.getEmail()));
             }
             return responseEntity;
         } catch (JsonProcessingException e) {
@@ -152,6 +152,8 @@ public class UserController {
         }
     }
 
+    // TODO: 19-Dec-19 documentation
+    // TODO: 19-Dec-19 token check
     @PostMapping(value="/users/{email}/create-pending-change")
     public ResponseEntity<?> registerPendingChange(@PathVariable String email, @RequestBody FullUserSpecification userSpecification) {
         service.registerPendingChangeForUserWitHEmail(userSpecification, email);
