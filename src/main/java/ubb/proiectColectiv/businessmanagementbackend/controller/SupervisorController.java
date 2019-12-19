@@ -59,7 +59,12 @@ public class SupervisorController {
         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    // TODO: 19-Dec-19 documentation
+    /**
+     * Checks if token belongs to a user
+     *
+     * @param token
+     * @return Status code Ok if user is supervisor, INTERNAL_SERVER_ERROR otherwise
+     */
     @GetMapping(value = "/supervisor/check")
     public ResponseEntity<String> checkIfSupervisor(@RequestHeader("Authorization") String token) {
         try {
@@ -73,7 +78,8 @@ public class SupervisorController {
         } catch (NullPointerException e) {
             logger.error("Token is not in the tokens list");
         } catch (Exception e) {
-            logger.error(e.getMessage() + " error at checking if user is a supervisor");
+            logger.error(e.getMessage());
+            logger.error("Error at checking if user is a supervisor");
         }
         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
