@@ -9,6 +9,8 @@ import java.util.List;
 @Setter
 public class FullUserSpecification {
 
+    List<Skill> skills;
+    List<ProjectExperienceEntry> projectExperience;
     private Boolean approvedStatus;
     private Boolean blockedStatus;
     private String consultingLevel;
@@ -21,11 +23,6 @@ public class FullUserSpecification {
     private String region;
     private String role;
     private String supervisor;
-
-
     public FullUserSpecification() {
     }
-
-    List<Skill> skills;
-    List<ProjectExperienceEntry> projectExperience;
 }

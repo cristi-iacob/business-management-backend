@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import ubb.proiectColectiv.businessmanagementbackend.service.SupervisorService;
 import ubb.proiectColectiv.businessmanagementbackend.service.TokenService;
 
-import javax.validation.constraints.Null;
 import java.util.List;
 
 @CrossOrigin

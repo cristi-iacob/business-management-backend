@@ -15,6 +15,7 @@ public class SupervisorService {
 
     /**
      * Retrieves users which have approvedStatus == false
+     *
      * @return list of users with appreovedStatus == false
      */
     public List<User> getRegistrationRequests() {
@@ -33,6 +34,7 @@ public class SupervisorService {
 
     /**
      * Checks if user is a supervisor
+     *
      * @param hashedEmail
      * @return true if user is supervisor, false otherwise
      */
@@ -59,6 +61,7 @@ public class SupervisorService {
 
     /**
      * Sets users approvedStatus to true
+     *
      * @param json Json containing users hashed email
      * @throws JsonProcessingException If the recieved json is incorrect
      */
@@ -69,6 +72,7 @@ public class SupervisorService {
 
     /**
      * Deletes user from Firebase
+     *
      * @param json Json containing users hashed email
      * @throws JsonProcessingException If the recieved json is incorrect
      */

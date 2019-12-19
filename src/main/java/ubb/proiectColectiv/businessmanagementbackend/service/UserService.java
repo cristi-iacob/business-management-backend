@@ -4,11 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.var;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
-import ubb.proiectColectiv.businessmanagementbackend.model.FullUserSpecification;
-import ubb.proiectColectiv.businessmanagementbackend.model.LoginResponseValue;
-import ubb.proiectColectiv.businessmanagementbackend.model.ProjectExperienceEntry;
-import ubb.proiectColectiv.businessmanagementbackend.model.TokenTransport;
-import ubb.proiectColectiv.businessmanagementbackend.model.User;
+import ubb.proiectColectiv.businessmanagementbackend.model.*;
 import ubb.proiectColectiv.businessmanagementbackend.utils.FirebaseUtils;
 
 import java.util.*;

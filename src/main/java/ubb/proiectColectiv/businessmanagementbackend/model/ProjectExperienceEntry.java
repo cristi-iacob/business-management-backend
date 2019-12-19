@@ -1,6 +1,5 @@
 package ubb.proiectColectiv.businessmanagementbackend.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
