@@ -8,8 +8,8 @@ public class TokenService {
 
     static {
         tokens = new HashMap<>();
-        tokens.put("supervisor@test.com", new ArrayList<>(Arrays.asList("100")));
-        tokens.put("user@test.com", new ArrayList<>(Arrays.asList("200")));
+        tokens.put("supervisor@test.com", new ArrayList<>(Arrays.asList("200")));
+        tokens.put("user@test.com", new ArrayList<>(Arrays.asList("100")));
     }
 
     /**
