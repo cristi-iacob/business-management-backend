@@ -5,14 +5,14 @@ import lombok.Data;
 @Data
 public class Skill {
 
-    public Skill() {
+    private String name;
+    private String area;
 
+    public Skill() {
     }
 
     public Skill(String name, String area) {
-        this.name =  name;
+        this.name = name;
         this.area = area;
     }
-    private String name;
-    private String area;
 }

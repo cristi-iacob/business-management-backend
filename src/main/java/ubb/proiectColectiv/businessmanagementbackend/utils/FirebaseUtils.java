@@ -13,11 +13,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class FirebaseUtils {
@@ -99,16 +97,13 @@ public class FirebaseUtils {
 
     /**
      * Method used to retrieve a collection from the specified resource URI.
-     * @param parameters
-     * String objects used to determine the desired route for the resource.
-     * All strings are used (from left to right) to create the route.
-     * ["A", "B", "C"] will result in a path A/B/C.json
-     * @param type
-     * Class reference. Used to implicitly cast the type of the elements from the collection.
-     * @param <TInner>
-     * Desired type of the collection.
-     * @return
-     * A list of non-null values found at the specified URI.
+     *
+     * @param parameters String objects used to determine the desired route for the resource.
+     *                   All strings are used (from left to right) to create the route.
+     *                   ["A", "B", "C"] will result in a path A/B/C.json
+     * @param type       Class reference. Used to implicitly cast the type of the elements from the collection.
+     * @param <TInner>   Desired type of the collection.
+     * @return A list of non-null values found at the specified URI.
      */
     public static <TInner extends Object> List<TInner> getCollectionAsUpstreamData(List<String> parameters, Class<TInner> type) {
         try {
@@ -143,16 +138,13 @@ public class FirebaseUtils {
 
     /**
      * Method used to retrieve a single resource from the specified URI.
-     * @param parameters
-     * String objects used to determine the desired route for the resource.
-     * All strings are used (from left to right) to create the route.
-     * ["A", "B", "C"] will result in a path A/B/C.json
-     * @param type
-     * Class reference. Determines the output type, will alter inner object mapping.
-     * @param <T>
-     * The type of the fetched resource.
-     * @return
-     * The nullable resource from the provided URI.
+     *
+     * @param parameters String objects used to determine the desired route for the resource.
+     *                   All strings are used (from left to right) to create the route.
+     *                   ["A", "B", "C"] will result in a path A/B/C.json
+     * @param type       Class reference. Determines the output type, will alter inner object mapping.
+     * @param <T>        The type of the fetched resource.
+     * @return The nullable resource from the provided URI.
      */
     public static <T extends Object> T getSingleAsUpstream(List<String> parameters, Class<T> type) {
         try {

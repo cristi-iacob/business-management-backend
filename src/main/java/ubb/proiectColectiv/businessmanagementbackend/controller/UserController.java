@@ -11,13 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ubb.proiectColectiv.businessmanagementbackend.model.FullUserSpecification;
 import ubb.proiectColectiv.businessmanagementbackend.model.LoginResponseValue;
-import ubb.proiectColectiv.businessmanagementbackend.model.ProjectExperienceEntry;
 import ubb.proiectColectiv.businessmanagementbackend.model.TokenTransport;
 import ubb.proiectColectiv.businessmanagementbackend.model.User;
 import ubb.proiectColectiv.businessmanagementbackend.service.UserService;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -60,7 +58,7 @@ public class UserController {
                     logger.info("User " + user.getEmail() + " is not registered");
                     break;
                 default:
-                    logger.info("User " + user.getEmail() + "logged in with token " + responseEntity.getBody());
+                    logger.info("User " + user.getEmail() + "logged in with token " + loginStatus.getToken());
             }
 
             return responseEntity;
@@ -86,7 +84,7 @@ public class UserController {
             if (registerStatus.equals("EXISTS")) {
                 logger.info("User " + user.getEmail() + " is already registered");
             } else {
-                logger.info("User " + user.getEmail() + " registered as " + Objects.hash(user.getEmail()) + " with token " + responseEntity.getBody());
+                logger.info("User " + user.getEmail() + " registered as " + Objects.hash(user.getEmail()));
             }
             return responseEntity;
         } catch (JsonProcessingException e) {
@@ -142,7 +140,7 @@ public class UserController {
 
     // TODO: 11-Dec-19 documentation
     // TODO: 17-Dec-19 add authentication check at controller level
-    @GetMapping(value="/users/{email}/projects")
+    @GetMapping(value = "/users/{email}/projects")
     public ResponseEntity<?> getAllUsers(@PathVariable String email) {
         try {
             var entries = service.getAllProjectExperienceEntriesForUserWithEmail(email);
@@ -152,7 +150,9 @@ public class UserController {
         }
     }
 
-    @PostMapping(value="/users/{email}/create-pending-change")
+    // TODO: 19-Dec-19 documentation
+    // TODO: 19-Dec-19 token check
+    @PostMapping(value = "/users/{email}/create-pending-change")
     public ResponseEntity<?> registerPendingChange(@PathVariable String email, @RequestBody FullUserSpecification userSpecification) {
         service.registerPendingChangeForUserWitHEmail(userSpecification, email);
         return null;

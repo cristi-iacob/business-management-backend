@@ -4,11 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.var;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
-import ubb.proiectColectiv.businessmanagementbackend.model.FullUserSpecification;
-import ubb.proiectColectiv.businessmanagementbackend.model.LoginResponseValue;
-import ubb.proiectColectiv.businessmanagementbackend.model.ProjectExperienceEntry;
-import ubb.proiectColectiv.businessmanagementbackend.model.TokenTransport;
-import ubb.proiectColectiv.businessmanagementbackend.model.User;
+import ubb.proiectColectiv.businessmanagementbackend.model.*;
 import ubb.proiectColectiv.businessmanagementbackend.utils.FirebaseUtils;
 
 import java.util.*;
@@ -43,10 +39,11 @@ public class UserService {
 
                 if (user.getApprovedStatus().equals(true)) {
                     String token = RandomStringUtils.randomAlphanumeric(15);    //generate token for this user
-                    if (TokenService.containsEmail(email))
+                    if (TokenService.containsEmail(email)) {
                         TokenService.getTokens().get(email).add(token);
-                    else
+                    } else {
                         TokenService.getTokens().put(email, new ArrayList<>(Collections.singletonList(token)));
+                    }
                     return new TokenTransport(token, LoginResponseValue.SUCCESSFUL);
                 }
                 return new TokenTransport(null, LoginResponseValue.UNAPPROVED);
@@ -98,11 +95,10 @@ public class UserService {
 
     /**
      * Retrieves the project experience entries which match the specified email.
-     * @param email
-     * The email to be matched by the project experience entries.
-     * Identifies the owner of the requested entries.
-     * @return
-     * Collection of project experience entries which belong to the user identified by the provided email.
+     *
+     * @param email The email to be matched by the project experience entries.
+     *              Identifies the owner of the requested entries.
+     * @return Collection of project experience entries which belong to the user identified by the provided email.
      */
     public List<ProjectExperienceEntry> getAllProjectExperienceEntriesForUserWithEmail(String email) {
         var hashedEmail = Objects.hash(email);
@@ -113,16 +109,16 @@ public class UserService {
     private List<ProjectExperienceEntry> getProjectExperienceEntriesForEmailHash(int hashedEmail) {
         var entries = new ArrayList<ProjectExperienceEntry>();
         var projectExperiences = FirebaseUtils.getCollectionAsUpstreamData(Arrays.asList("ProjectExperience"), HashMap.class);
-        projectExperiences = projectExperiences.stream().filter(pe -> (Integer)pe.get("userId") == hashedEmail).collect(Collectors.toList());
-        for(var projectExperienceMap: projectExperiences) {
-            var consultingLevelId = (Integer)projectExperienceMap.get("consultingLevelId");
-            var projectId = (Integer)projectExperienceMap.get("projectId");
+        projectExperiences = projectExperiences.stream().filter(pe -> (Integer) pe.get("userId") == hashedEmail).collect(Collectors.toList());
+        for (var projectExperienceMap : projectExperiences) {
+            var consultingLevelId = (Integer) projectExperienceMap.get("consultingLevelId");
+            var projectId = (Integer) projectExperienceMap.get("projectId");
 
             var consultingLevel = FirebaseUtils.getSingleAsUpstream(Arrays.asList("ConsultingLevel", consultingLevelId.toString()), String.class);
             var project = FirebaseUtils.getSingleAsUpstream(Arrays.asList("Project", projectId.toString()), HashMap.class);
 
-            var clientId = (Integer)project.get("clientId");
-            var industryId = (Integer)project.get("industryId");
+            var clientId = (Integer) project.get("clientId");
+            var industryId = (Integer) project.get("industryId");
 
             var client = FirebaseUtils.getSingleAsUpstream(Arrays.asList("Client", clientId.toString()), HashMap.class);
             var industry = FirebaseUtils.getSingleAsUpstream(Arrays.asList("Industry", industryId.toString()), String.class);
@@ -136,16 +132,16 @@ public class UserService {
     // TODO: 11-Dec-19 documentation
     private ProjectExperienceEntry buildProjectExprienceEntry(Map<String, Object> entryFirstClassProperties, Map<String, Object> project, Map<String, Object> client, String industry, String consultingLevel) {
         return ProjectExperienceEntry.builder()
-                .startDate((Integer)entryFirstClassProperties.get("startDate"))
-                .endDate((Integer)entryFirstClassProperties.get("endDate"))
+                .startDate((Integer) entryFirstClassProperties.get("startDate"))
+                .endDate((Integer) entryFirstClassProperties.get("endDate"))
                 .consultingLevel(consultingLevel)
-                .description((String)entryFirstClassProperties.get("description"))
-                .projectStartDate((Integer)project.get("startDate"))
-                .projectEndDate((Integer)project.get("endDate"))
-                .projectName((String)project.get("name"))
+                .description((String) entryFirstClassProperties.get("description"))
+                .projectStartDate((Integer) project.get("startDate"))
+                .projectEndDate((Integer) project.get("endDate"))
+                .projectName((String) project.get("name"))
                 .industry(industry)
-                .clientAddress((String)client.get("address"))
-                .clientName((String)client.get("name"))
+                .clientAddress((String) client.get("address"))
+                .clientName((String) client.get("name"))
                 .build();
     }
 
