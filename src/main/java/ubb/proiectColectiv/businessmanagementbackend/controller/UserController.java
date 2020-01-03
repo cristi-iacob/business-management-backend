@@ -13,6 +13,7 @@ import ubb.proiectColectiv.businessmanagementbackend.model.FullUserSpecification
 import ubb.proiectColectiv.businessmanagementbackend.model.LoginResponseValue;
 import ubb.proiectColectiv.businessmanagementbackend.model.TokenTransport;
 import ubb.proiectColectiv.businessmanagementbackend.model.User;
+import ubb.proiectColectiv.businessmanagementbackend.service.TokenService;
 import ubb.proiectColectiv.businessmanagementbackend.service.UserService;
 
 import java.util.HashMap;
@@ -58,7 +59,7 @@ public class UserController {
                     logger.info("User " + user.getEmail() + " is not registered");
                     break;
                 default:
-                    logger.info("User " + user.getEmail() + "logged in with token " + loginStatus.getToken());
+                    logger.info("User " + user.getEmail() + " logged in with token " + loginStatus.getToken());
             }
 
             return responseEntity;
@@ -97,25 +98,22 @@ public class UserController {
      * Deletes users token
      *
      * @param token   Active token on this session
-     * @param content Email of user
      * @return Message of "DELETED", "NOT LOGGED" or "ERROR"
      */
-    @PostMapping(value = "/logout")
-    public ResponseEntity<?> logout(@RequestHeader("Authorization") String token, @RequestBody String content) {
+    @DeleteMapping(value = "/logout")
+    public ResponseEntity<?> logout(@RequestHeader String token) {
         try {
-            HashMap<?, ?> json = mapper.readValue(content, HashMap.class);
-            String logoutStatus = service.logout((String) json.get("email"), token);
-            ResponseEntity<?> responseEntity = new ResponseEntity<>(logoutStatus, HttpStatus.OK);
-
+            String email = TokenService.getKeyByToken(token);
+            String logoutStatus = service.logout(email, token);
             if (logoutStatus.equals("LOGGED OUT")) {
-                logger.info("User " + json.get("email") + " logged out with token " + json.get("token"));
+                logger.info("User " + email + " logged out with token: " + token);
             } else {
-                logger.warn("User " + json.get("email") + " tried logging out without being logged or having a token");
+                logger.warn("User " + email + " tried logging out without being logged or having a token");
             }
-            return responseEntity;
-        } catch (JsonProcessingException e) {
-            logger.error("error parsing logout request content");
-            return new ResponseEntity<>("ERROR", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(logoutStatus, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error at logging out!");
+            return new ResponseEntity<>("ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
