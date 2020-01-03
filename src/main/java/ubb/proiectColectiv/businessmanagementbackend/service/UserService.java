@@ -60,7 +60,12 @@ public class UserService {
         return new TokenTransport(null, LoginResponseValue.INEXISTENT);
     }
 
-    // TODO: 11-Dec-19 documentation
+    /**
+     * Creates and saves a user in firebase with email, password, approvalStatus = false, blockedStatus = false, failedLoginCounter = 0
+     * @param email Email of the user to be registered
+     * @param password Password of the user to be registered
+     * @return "REGISTERED" if registration was successful, "EXISTS" if a user with this email already exists
+     */
     public String register(String email, String password) {
         Object userInDataBase = FirebaseUtils.getUpstreamData(Arrays.asList("User", String.valueOf(Objects.hash(email)), "password"));
 
@@ -77,7 +82,12 @@ public class UserService {
         return "REGISTERED";
     }
 
-    // TODO: 11-Dec-19 documentation
+    /**
+     * Deletes token from Tokens
+     * @param email email of the user
+     * @param token token to be removed
+     * @return "LOGGED OUT" if it was successful, "NOT LOGGED" if token is not in Tokens
+     */
     public String logout(String email, String token) {
         if (TokenService.getTokens().get(email).remove(token))
             return "LOGGED OUT";
@@ -85,7 +95,12 @@ public class UserService {
             return "NOT LOGGED";
     }
 
-    // TODO: 11-Dec-19 documentation
+    /**
+     * Retrieves all personal data of a user from Firebase
+     * @param token token of the user
+     * @param email email of the user
+     * @return all personal data or the message "INVALID TOKEN" if the token is not active
+     */
     public Object getPersonalData(String token, String email) {
         if (TokenService.containsToken(email, token)) {
             return FirebaseUtils.getUpstreamData(Arrays.asList("User", String.valueOf(Objects.hash(email))));

@@ -76,14 +76,11 @@ public class SupervisorController {
             String email = TokenService.getKeyByToken(token);
             if (supervisorService.isSupervisor(String.valueOf(Objects.hash(email)))) {
                 logger.info("User is supervisor");
-                return new ResponseEntity<>(null, HttpStatus.OK);
-            } else {
-                throw new Exception("User is not a supervisor");
+                return new ResponseEntity<>("True", HttpStatus.OK);
             }
         } catch (NullPointerException e) {
             logger.error("Token is not in the tokens list");
         } catch (Exception e) {
-            logger.error(e.getMessage());
             logger.error("Error at checking if user is a supervisor");
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
