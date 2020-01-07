@@ -158,4 +158,14 @@ public class UserController {
         return null;
     }
 
+    @GetMapping(value = "/projects")
+    public ResponseEntity<?> registerPendingChange() {
+        try {
+            var entries = service.getAllPossibleProjects();
+            return new ResponseEntity<>(entries, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Oops, something went wrong while retrieving projects!", HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }
