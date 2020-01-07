@@ -168,6 +168,7 @@ public class UserService {
                 .clientAddress((String) client.get("address"))
                 .clientName((String) client.get("name"))
                 .id(id)
+                .itemState(ItemState.PERSISTED)
                 .build();
     }
 
