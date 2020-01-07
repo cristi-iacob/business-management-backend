@@ -105,18 +105,32 @@ public class FirebaseUtils {
      * @param <TInner>   Desired type of the collection.
      * @return A list of non-null values found at the specified URI.
      */
-    public static <TInner extends Object> List<TInner> getCollectionAsUpstreamData(List<String> parameters, Class<TInner> type) {
+    public static <TInner extends Object> List<TInner> getCollectionAsUpstreamData(List<String> parameters, boolean removeNulls, Class<TInner> type) {
         try {
             var content = fetchContentFromRoute(parameters);
             var data = new ObjectMapper().readValue(content, ArrayList.class);
-            data = (ArrayList) data.stream().filter(map -> map != null).collect(Collectors.toList());
+            if (removeNulls) {
+                data = (ArrayList) data.stream().filter(map -> map != null).collect(Collectors.toList());
+            }
             return data;
         } catch (NullPointerException e) {
             logger.warn("Nothing received from firebase");
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return null;
+    }
 
+    public static <TInner extends Object> HashMap<String, TInner> getNestedCollectionAsUpstreamData(List<String> parameters, boolean removeNulls, Class<TInner> type) {
+        try {
+            var content = fetchContentFromRoute(parameters);
+            var data = new ObjectMapper().readValue(content, HashMap.class);
+            return data;
+        } catch (NullPointerException e) {
+            logger.warn("Nothing received from firebase");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 

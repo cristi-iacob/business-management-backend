@@ -8,7 +8,6 @@ import ubb.proiectColectiv.businessmanagementbackend.model.*;
 import ubb.proiectColectiv.businessmanagementbackend.utils.FirebaseUtils;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -123,8 +122,19 @@ public class UserService {
     // TODO: 11-Dec-19 documentation
     private List<ProjectExperienceEntry> getProjectExperienceEntriesForEmailHash(int hashedEmail) {
         var entries = new ArrayList<ProjectExperienceEntry>();
-        var projectExperiences = FirebaseUtils.getCollectionAsUpstreamData(Arrays.asList("ProjectExperience"), HashMap.class);
-        projectExperiences = projectExperiences.stream().filter(pe -> (Integer) pe.get("userId") == hashedEmail).collect(Collectors.toList());
+        var nestedExperienceCollection = FirebaseUtils.getNestedCollectionAsUpstreamData(Arrays.asList("ProjectExperience"), false, HashMap.class);
+        var keys = nestedExperienceCollection.keySet();
+        var projectExperiences = new ArrayList<HashMap>();
+        var ids = new ArrayList<String>();
+        var idsPos = 0;
+
+        keys.forEach(k -> {
+            if ((Integer)nestedExperienceCollection.get(k).get("userId") == hashedEmail) {
+                projectExperiences.add(nestedExperienceCollection.get(k));
+                ids.add(k);
+            }
+        });
+
         for (var projectExperienceMap : projectExperiences) {
             var consultingLevelId = (Integer) projectExperienceMap.get("consultingLevelId");
             var projectId = (Integer) projectExperienceMap.get("projectId");
@@ -138,14 +148,14 @@ public class UserService {
             var client = FirebaseUtils.getSingleAsUpstream(Arrays.asList("Client", clientId.toString()), HashMap.class);
             var industry = FirebaseUtils.getSingleAsUpstream(Arrays.asList("Industry", industryId.toString()), String.class);
 
-            var projectExperienceEntry = buildProjectExprienceEntry(projectExperienceMap, project, client, industry, consultingLevel);
+            var projectExperienceEntry = buildProjectExprienceEntry(ids.get(idsPos++), projectExperienceMap, project, client, industry, consultingLevel);
             entries.add(projectExperienceEntry);
         }
         return entries;
     }
 
     // TODO: 11-Dec-19 documentation
-    private ProjectExperienceEntry buildProjectExprienceEntry(Map<String, Object> entryFirstClassProperties, Map<String, Object> project, Map<String, Object> client, String industry, String consultingLevel) {
+    private ProjectExperienceEntry buildProjectExprienceEntry(String id, Map<String, Object> entryFirstClassProperties, Map<String, Object> project, Map<String, Object> client, String industry, String consultingLevel) {
         return ProjectExperienceEntry.builder()
                 .startDate((Integer) entryFirstClassProperties.get("startDate"))
                 .endDate((Integer) entryFirstClassProperties.get("endDate"))
@@ -157,6 +167,7 @@ public class UserService {
                 .industry(industry)
                 .clientAddress((String) client.get("address"))
                 .clientName((String) client.get("name"))
+                .id(id)
                 .build();
     }
 
