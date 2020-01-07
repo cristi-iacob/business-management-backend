@@ -193,4 +193,30 @@ public class UserService {
 
         return adminEmails;
     }
+
+    public List<Project> getAllPossibleProjects() {
+        var entries = new ArrayList<Project>();
+        var nestedProjectsCollection = FirebaseUtils.getNestedCollectionAsUpstreamData(Arrays.asList("Project"), false, HashMap.class);
+        var keys = nestedProjectsCollection.keySet();
+        var projects = new ArrayList<HashMap>();
+        var ids = new ArrayList<String>();
+        var idsPos = 0;
+
+        keys.forEach(k -> {
+            projects.add(nestedProjectsCollection.get(k));
+            ids.add(k.toString());
+        });
+
+        for (var projectExperienceMap : projects) {
+            var projectName = projectExperienceMap.get("name").toString();
+            var id = ids.get(idsPos++);
+
+            var project = Project.builder()
+                    .id(id)
+                    .name(projectName)
+                    .build();
+            entries.add(project);
+        }
+        return entries;
+    }
 }
