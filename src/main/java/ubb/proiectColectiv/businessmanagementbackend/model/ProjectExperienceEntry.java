@@ -13,6 +13,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class ProjectExperienceEntry {
+    private String id;
     private int startDate;
     private int endDate;
     private String consultingLevel;
