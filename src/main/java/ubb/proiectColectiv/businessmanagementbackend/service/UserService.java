@@ -164,4 +164,22 @@ public class UserService {
         List path = Arrays.asList("User", String.valueOf(Objects.hash(userEmail)), "edits");
         FirebaseUtils.setValue(path, fullUserSpecification);
     }
+
+    public List < String > getAllAdminEmails() {
+        HashMap < String, HashMap < String, Object > > users = (HashMap < String, HashMap < String, Object > >) FirebaseUtils.getUpstreamData(Arrays.asList("User"));
+        List < String > adminEmails = new ArrayList<>();
+
+        for (String hash : users.keySet()) {
+            Integer role = -1;
+            if (users.get(hash).get("roleId") != null) {
+                role = (Integer) users.get(hash).get("roleId");
+            }
+
+            if (role == 3) {
+                adminEmails.add((String) users.get(hash).get("email"));
+            }
+        }
+
+        return adminEmails;
+    }
 }

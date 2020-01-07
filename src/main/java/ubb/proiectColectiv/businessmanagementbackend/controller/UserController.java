@@ -15,6 +15,7 @@ import ubb.proiectColectiv.businessmanagementbackend.model.TokenTransport;
 import ubb.proiectColectiv.businessmanagementbackend.model.User;
 import ubb.proiectColectiv.businessmanagementbackend.service.TokenService;
 import ubb.proiectColectiv.businessmanagementbackend.service.UserService;
+import ubb.proiectColectiv.businessmanagementbackend.utils.MailServer;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -85,6 +86,7 @@ public class UserController {
             if (registerStatus.equals("EXISTS")) {
                 logger.info("User " + user.getEmail() + " is already registered");
             } else {
+                MailServer.sendRegistrationEmailToAdmins();
                 logger.info("User " + user.getEmail() + " registered as " + Objects.hash(user.getEmail()));
             }
             return responseEntity;
