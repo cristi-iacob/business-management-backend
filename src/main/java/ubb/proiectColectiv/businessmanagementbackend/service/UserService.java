@@ -220,4 +220,21 @@ public class UserService {
         }
         return entries;
     }
+
+    public List<ConsultingLevel> getAllPossibleConsultingLevels() {
+        var entries = new ArrayList<ConsultingLevel>();
+        var names = FirebaseUtils.getCollectionAsUpstreamData(Arrays.asList("ConsultingLevel"), false, String.class);
+
+        for(var i = 0; i < names.size(); i++) {
+            if (names.get(i) != null) {
+                var consultingLevel = ConsultingLevel.builder()
+                        .id(String.valueOf(i))
+                        .name(names.get(i))
+                        .build();
+                entries.add(consultingLevel);
+            }
+        }
+
+        return entries;
+    }
 }

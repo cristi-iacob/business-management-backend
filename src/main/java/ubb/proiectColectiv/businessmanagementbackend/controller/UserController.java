@@ -168,4 +168,14 @@ public class UserController {
         }
     }
 
+    @GetMapping(value = "/levels")
+    public ResponseEntity<?> getAllLevels() {
+        try {
+            var entries = service.getAllPossibleConsultingLevels();
+            return new ResponseEntity<>(entries, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Oops, something went wrong while retrieving consulting levels!", HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }
