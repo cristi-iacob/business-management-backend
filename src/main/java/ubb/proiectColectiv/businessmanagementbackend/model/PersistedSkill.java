@@ -7,9 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class Skill {
-
-    private String Id;
+public class PersistedSkill {
+    private String id;
     private String name;
-    private String area;
+    private String skillAreaId;
 }
