@@ -130,29 +130,34 @@ public class UserService {
         var idsPos = 0;
 
         keys.forEach(k -> {
-            if ((Integer)nestedExperienceCollection.get(k).get("userId") == hashedEmail) {
+            if (nestedExperienceCollection.get(k).get("userId").toString().equals(String.valueOf(hashedEmail))) {
                 projectExperiences.add(nestedExperienceCollection.get(k));
                 ids.add(k);
             }
         });
 
         for (var projectExperienceMap : projectExperiences) {
-            var consultingLevelId = projectExperienceMap.get("consultingLevelId");
-            var projectId = projectExperienceMap.get("projectId");
-
-            var consultingLevel = FirebaseUtils.getSingleAsUpstream(Arrays.asList("ConsultingLevel", consultingLevelId.toString()), String.class);
-            var project = FirebaseUtils.getSingleAsUpstream(Arrays.asList("Project", projectId.toString()), HashMap.class);
-
-            var clientId = project.get("clientId");
-            var industryId = project.get("industryId");
-
-            var client = FirebaseUtils.getSingleAsUpstream(Arrays.asList("Client", clientId.toString()), HashMap.class);
-            var industry = FirebaseUtils.getSingleAsUpstream(Arrays.asList("Industry", industryId.toString()), String.class);
-
-            var projectExperienceEntry = buildProjectExprienceEntry(ids.get(idsPos++), projectExperienceMap, project, client, industry, consultingLevel);
+            var projectExperienceEntry = buildProjectExperienceEntryFromMap(projectExperienceMap, ids.get(idsPos++));
             entries.add(projectExperienceEntry);
         }
         return entries;
+    }
+
+    public static ProjectExperienceEntry buildProjectExperienceEntryFromMap(Map<String, Object> projectExperienceMap, String id) {
+        var consultingLevelId = projectExperienceMap.get("consultingLevelId");
+        var projectId = projectExperienceMap.get("projectId");
+
+        var consultingLevel = FirebaseUtils.getSingleAsUpstream(Arrays.asList("ConsultingLevel", consultingLevelId.toString()), String.class);
+        var project = FirebaseUtils.getSingleAsUpstream(Arrays.asList("Project", projectId.toString()), HashMap.class);
+
+        var clientId = project.get("clientId");
+        var industryId = project.get("industryId");
+
+        var client = FirebaseUtils.getSingleAsUpstream(Arrays.asList("Client", clientId.toString()), HashMap.class);
+        var industry = FirebaseUtils.getSingleAsUpstream(Arrays.asList("Industry", industryId.toString()), String.class);
+
+        var projectExperienceEntry = buildProjectExprienceEntry(id, projectExperienceMap, project, client, industry, consultingLevel);
+        return projectExperienceEntry;
     }
 
     // TODO: 11-Dec-19 documentation
