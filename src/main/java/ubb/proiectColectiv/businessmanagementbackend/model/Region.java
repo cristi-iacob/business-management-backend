@@ -7,9 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class Skill {
-
-    private String Id;
+public class Region {
+    private String id;
     private String name;
-    private String area;
 }

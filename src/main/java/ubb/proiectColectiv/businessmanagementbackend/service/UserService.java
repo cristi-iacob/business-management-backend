@@ -234,7 +234,111 @@ public class UserService {
                 entries.add(consultingLevel);
             }
         }
+        return entries;
+    }
 
+    public List<Region> getAllPossibleRegions() {
+        var entries = new ArrayList<Region>();
+        var names = FirebaseUtils.getCollectionAsUpstreamData(Arrays.asList("Region"), false, String.class);
+
+        for(var i = 0; i < names.size(); i++) {
+            if (names.get(i) != null) {
+                var region = Region.builder()
+                        .id(String.valueOf(i))
+                        .name(names.get(i))
+                        .build();
+                entries.add(region);
+            }
+        }
+        return entries;
+    }
+
+    public FullUserSpecification getFullUserSpecificationForEmail(String email) {
+        var hashedEmail = Objects.hash(email);
+        var userMap = FirebaseUtils.getSingleAsUpstream(Arrays.asList("User", String.valueOf(hashedEmail)), HashMap.class);
+
+        var firstName = userMap.get("firstName").toString();
+        var lastName = userMap.get("lastName").toString();
+
+        var consultingLevelId = userMap.get("consultingLevelId").toString();
+        var allConsultingLevels = getAllPossibleConsultingLevels();
+        var consultingLevel = allConsultingLevels.stream().filter(x -> x.getId().equals(consultingLevelId)).findFirst().get();
+
+        var regionId = userMap.get("regionId").toString();
+        var allRegions = getAllPossibleRegions();
+        var region = allRegions.stream().filter(x -> x.getId().equals(regionId)).findFirst().get();
+
+        var skills = getAllSkillsForUserHash(hashedEmail);
+        var projectExperience = getAllProjectExperienceEntriesForUserWithEmail(email);
+
+        return FullUserSpecification.builder()
+                .consultingLevel(consultingLevel.getName())
+                .email(email)
+                .firstName(firstName)
+                .lastName(lastName)
+                .projectExperience(projectExperience)
+                .skills(skills)
+                .region(region.getName())
+                .build();
+    }
+
+    public List<Skill> getAllSkillsForUserHash(long hash) {
+        var entries = new ArrayList<Skill>();
+        var usersSkills = FirebaseUtils.getCollectionAsUpstreamData(Arrays.asList("UserSkills"), false, HashMap.class);
+        var allPossibleSkillArea = getAllPossibleSkillAreas();
+        var allPersistedSkills = getAllPersistedSkills();
+
+        for(var i = 0; i < usersSkills.size(); i++) {
+            if (usersSkills.get(i) != null) {
+                var userHash = usersSkills.get(i).get("userHash").toString();
+                if (String.valueOf(hash).equals(userHash)) {
+                    var skillId = usersSkills.get(i).get("skillId").toString();
+                    var targetPersistedSkill = allPersistedSkills.stream().filter(x -> x.getId().equals(skillId)).findFirst().get();
+                    var areaId = targetPersistedSkill.getSkillAreaId();
+                    var targetSkillArea = allPossibleSkillArea.stream().filter(x -> x.getId().equals(areaId)).findAny().get();
+                    var skill = Skill.builder()
+                            .area(targetSkillArea.getName())
+                            .Id(String.valueOf(i))
+                            .name(targetPersistedSkill.getName())
+                            .build();
+                    entries.add(skill);
+                }
+            }
+        }
+        return entries;
+    }
+
+    public List<SkillArea> getAllPossibleSkillAreas() {
+        var entries = new ArrayList<SkillArea>();
+        var names = FirebaseUtils.getCollectionAsUpstreamData(Arrays.asList("SkillArea"), false, String.class);
+
+        for(var i = 0; i < names.size(); i++) {
+            if (names.get(i) != null) {
+                var skillArea = SkillArea.builder()
+                        .id(String.valueOf(i))
+                        .name(names.get(i))
+                        .build();
+                entries.add(skillArea);
+            }
+        }
+        return entries;
+    }
+
+    private List<PersistedSkill> getAllPersistedSkills() {
+        var entries = new ArrayList<PersistedSkill>();
+        var args = FirebaseUtils.getCollectionAsUpstreamData(Arrays.asList("Skill"), false, HashMap.class);
+
+        for(var i = 0; i < args.size(); i++) {
+            if (args.get(i) != null) {
+                var skillAreaId = args.get(i).get("skillAreaId").toString();
+                PersistedSkill persistedSkill = PersistedSkill.builder()
+                        .id(String.valueOf(i))
+                        .name(args.get(i).get("name").toString())
+                        .skillAreaId(skillAreaId)
+                        .build();
+                entries.add(persistedSkill);
+            }
+        }
         return entries;
     }
 }

@@ -178,4 +178,14 @@ public class UserController {
         }
     }
 
+    @GetMapping(value = "/users/{email}")
+    public ResponseEntity<?> getUser(@PathVariable String email) {
+        try {
+            var fullUserSpecification = service.getFullUserSpecificationForEmail(email);
+            return new ResponseEntity<>(fullUserSpecification, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Oops, something went wrong while retrieving the user!", HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }
