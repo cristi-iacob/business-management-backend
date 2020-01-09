@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ubb.proiectColectiv.businessmanagementbackend.model.FullUserSpecification;
+import ubb.proiectColectiv.businessmanagementbackend.model.ChangeModel;
 import ubb.proiectColectiv.businessmanagementbackend.model.LoginResponseValue;
 import ubb.proiectColectiv.businessmanagementbackend.model.TokenTransport;
 import ubb.proiectColectiv.businessmanagementbackend.model.User;
@@ -17,7 +17,7 @@ import ubb.proiectColectiv.businessmanagementbackend.service.TokenService;
 import ubb.proiectColectiv.businessmanagementbackend.service.UserService;
 import ubb.proiectColectiv.businessmanagementbackend.utils.MailServer;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -152,14 +152,14 @@ public class UserController {
 
     // TODO: 19-Dec-19 documentation
     // TODO: 19-Dec-19 token check
-    @PostMapping(value = "/users/{email}/create-pending-change")
-    public ResponseEntity<?> registerPendingChange(@PathVariable String email, @RequestBody FullUserSpecification userSpecification) {
-        service.registerPendingChangeForUserWitHEmail(userSpecification, email);
+    @PostMapping(value = "/users/{email}/create-pending-changes")
+    public ResponseEntity<?> registerPendingChange(@PathVariable String email, @RequestBody List<ChangeModel> changeModels) {
+        service.registerPedingingChangesForUserWithEmail(changeModels, email);
         return null;
     }
 
     @GetMapping(value = "/projects")
-    public ResponseEntity<?> registerPendingChange() {
+    public ResponseEntity<?> getAllProjects() {
         try {
             var entries = service.getAllPossibleProjects();
             return new ResponseEntity<>(entries, HttpStatus.OK);

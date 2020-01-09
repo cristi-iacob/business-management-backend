@@ -172,9 +172,9 @@ public class UserService {
                 .build();
     }
 
-    public void registerPendingChangeForUserWitHEmail(FullUserSpecification fullUserSpecification, String userEmail) {
+    public void registerPedingingChangesForUserWithEmail(List<ChangeModel> changeModels, String userEmail) {
         List path = Arrays.asList("User", String.valueOf(Objects.hash(userEmail)), "edits");
-        FirebaseUtils.setValue(path, fullUserSpecification);
+        FirebaseUtils.setValue(path, changeModels);
     }
 
     public List < String > getAllAdminEmails() {
