@@ -8,6 +8,7 @@ import ubb.proiectColectiv.businessmanagementbackend.model.*;
 import ubb.proiectColectiv.businessmanagementbackend.utils.FirebaseUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -114,13 +115,13 @@ public class UserService {
      *              Identifies the owner of the requested entries.
      * @return Collection of project experience entries which belong to the user identified by the provided email.
      */
-    public List<ProjectExperienceEntry> getAllProjectExperienceEntriesForUserWithEmail(String email) {
+    public static List<ProjectExperienceEntry> getAllProjectExperienceEntriesForUserWithEmail(String email) {
         var hashedEmail = Objects.hash(email);
         return getProjectExperienceEntriesForEmailHash(hashedEmail);
     }
 
     // TODO: 11-Dec-19 documentation
-    private List<ProjectExperienceEntry> getProjectExperienceEntriesForEmailHash(int hashedEmail) {
+    private static List<ProjectExperienceEntry> getProjectExperienceEntriesForEmailHash(int hashedEmail) {
         var entries = new ArrayList<ProjectExperienceEntry>();
         var nestedExperienceCollection = FirebaseUtils.getNestedCollectionAsUpstreamData(Arrays.asList("ProjectExperience"), false, HashMap.class);
         var keys = nestedExperienceCollection.keySet();
@@ -136,14 +137,14 @@ public class UserService {
         });
 
         for (var projectExperienceMap : projectExperiences) {
-            var consultingLevelId = (Integer) projectExperienceMap.get("consultingLevelId");
-            var projectId = (Integer) projectExperienceMap.get("projectId");
+            var consultingLevelId = projectExperienceMap.get("consultingLevelId");
+            var projectId = projectExperienceMap.get("projectId");
 
             var consultingLevel = FirebaseUtils.getSingleAsUpstream(Arrays.asList("ConsultingLevel", consultingLevelId.toString()), String.class);
             var project = FirebaseUtils.getSingleAsUpstream(Arrays.asList("Project", projectId.toString()), HashMap.class);
 
-            var clientId = (Integer) project.get("clientId");
-            var industryId = (Integer) project.get("industryId");
+            var clientId = project.get("clientId");
+            var industryId = project.get("industryId");
 
             var client = FirebaseUtils.getSingleAsUpstream(Arrays.asList("Client", clientId.toString()), HashMap.class);
             var industry = FirebaseUtils.getSingleAsUpstream(Arrays.asList("Industry", industryId.toString()), String.class);
@@ -155,7 +156,7 @@ public class UserService {
     }
 
     // TODO: 11-Dec-19 documentation
-    private ProjectExperienceEntry buildProjectExprienceEntry(String id, Map<String, Object> entryFirstClassProperties, Map<String, Object> project, Map<String, Object> client, String industry, String consultingLevel) {
+    private static ProjectExperienceEntry buildProjectExprienceEntry(String id, Map<String, Object> entryFirstClassProperties, Map<String, Object> project, Map<String, Object> client, String industry, String consultingLevel) {
         return ProjectExperienceEntry.builder()
                 .startDate((Integer) entryFirstClassProperties.get("startDate"))
                 .endDate((Integer) entryFirstClassProperties.get("endDate"))
@@ -172,12 +173,12 @@ public class UserService {
                 .build();
     }
 
-    public void registerPedingingChangesForUserWithEmail(List<ChangeModel> changeModels, String userEmail) {
+    public static void registerPedingingChangesForUserWithEmail(List<ChangeModel> changeModels, String userEmail) {
         List path = Arrays.asList("User", String.valueOf(Objects.hash(userEmail)), "edits");
         FirebaseUtils.setValue(path, changeModels);
     }
 
-    public List < String > getAllAdminEmails() {
+    public static List < String > getAllAdminEmails() {
         HashMap < String, HashMap < String, Object > > users = (HashMap < String, HashMap < String, Object > >) FirebaseUtils.getUpstreamData(Arrays.asList("User"));
         List < String > adminEmails = new ArrayList<>();
 
@@ -195,7 +196,7 @@ public class UserService {
         return adminEmails;
     }
 
-    public List<Project> getAllPossibleProjects() {
+    public static List<Project> getAllPossibleProjects() {
         var entries = new ArrayList<Project>();
         var nestedProjectsCollection = FirebaseUtils.getNestedCollectionAsUpstreamData(Arrays.asList("Project"), false, HashMap.class);
         var keys = nestedProjectsCollection.keySet();
@@ -221,7 +222,7 @@ public class UserService {
         return entries;
     }
 
-    public List<ConsultingLevel> getAllPossibleConsultingLevels() {
+    public static List<ConsultingLevel> getAllPossibleConsultingLevels() {
         var entries = new ArrayList<ConsultingLevel>();
         var names = FirebaseUtils.getCollectionAsUpstreamData(Arrays.asList("ConsultingLevel"), false, String.class);
 
@@ -237,7 +238,7 @@ public class UserService {
         return entries;
     }
 
-    public List<Region> getAllPossibleRegions() {
+    public static List<Region> getAllPossibleRegions() {
         var entries = new ArrayList<Region>();
         var names = FirebaseUtils.getCollectionAsUpstreamData(Arrays.asList("Region"), false, String.class);
 
@@ -253,7 +254,7 @@ public class UserService {
         return entries;
     }
 
-    public FullUserSpecification getFullUserSpecificationForEmail(String email) {
+    public static FullUserSpecification getFullUserSpecificationForEmail(String email) {
         var hashedEmail = Objects.hash(email);
         var userMap = FirebaseUtils.getSingleAsUpstream(Arrays.asList("User", String.valueOf(hashedEmail)), HashMap.class);
 
@@ -282,7 +283,7 @@ public class UserService {
                 .build();
     }
 
-    public List<Skill> getAllSkillsForUserHash(long hash) {
+    public static List<Skill> getAllSkillsForUserHash(long hash) {
         var entries = new ArrayList<Skill>();
         var usersSkills = FirebaseUtils.getCollectionAsUpstreamData(Arrays.asList("UserSkills"), false, HashMap.class);
         var allPossibleSkillArea = getAllPossibleSkillAreas();
@@ -308,7 +309,7 @@ public class UserService {
         return entries;
     }
 
-    public List<SkillArea> getAllPossibleSkillAreas() {
+    public static List<SkillArea> getAllPossibleSkillAreas() {
         var entries = new ArrayList<SkillArea>();
         var names = FirebaseUtils.getCollectionAsUpstreamData(Arrays.asList("SkillArea"), false, String.class);
 
@@ -324,7 +325,7 @@ public class UserService {
         return entries;
     }
 
-    private List<PersistedSkill> getAllPersistedSkills() {
+    private static List<PersistedSkill> getAllPersistedSkills() {
         var entries = new ArrayList<PersistedSkill>();
         var args = FirebaseUtils.getCollectionAsUpstreamData(Arrays.asList("Skill"), false, HashMap.class);
 
@@ -340,5 +341,52 @@ public class UserService {
             }
         }
         return entries;
+    }
+
+    public static FullUserSpecification createDiff(String email) {
+        var allStrategies = CompileChangeStrategiesFactory.createStrategies();
+        var changes = getChangeModelsForHash(String.valueOf(Objects.hash(email)));
+        final FullUserSpecification fullUserSpecification = getFullUserSpecificationForEmail(email);
+
+        changes.forEach(c -> {
+            if (c != null) {
+                allStrategies.forEach(s -> {
+                    if (s.CanCompile(c)) {
+                        s.Preview(email, fullUserSpecification, c);
+                    }
+                });
+            }
+        });
+
+        return fullUserSpecification;
+    }
+
+    private static List<ChangeModel> getChangeModelsForHash(String hash) {
+        var changeModelMaps = FirebaseUtils.getCollectionAsUpstreamData(Arrays.asList("User", hash, "edits"), false, HashMap.class);
+        List<ChangeModel> changeModels = changeModelMaps.stream().filter(m -> m != null).map(m -> {
+            var args = m.get("args");
+            var changeType = ChangeType.valueOf(m.get("changeType").toString());
+            var resource = Resource.valueOf(m.get("resource").toString());
+            return ChangeModel.builder().args((HashMap) args).changeType(changeType).resource(resource).build();
+        }).collect(Collectors.toList());
+        return changeModels;
+    }
+
+    public static void acceptChanges(String email) {
+        var allStrategies = CompileChangeStrategiesFactory.createStrategies();
+        var changes = getChangeModelsForHash(String.valueOf(Objects.hash(email)));
+
+        changes.forEach(c -> {
+            if (c != null) {
+                allStrategies.forEach(s -> {
+                    if (s.CanCompile(c)) {
+                        s.Persist(email, c);
+                    }
+                });
+            }
+        });
+
+        var hash = String.valueOf(Objects.hash(email));
+        FirebaseUtils.setValue(Arrays.asList("User", hash, "edits"), null);
     }
 }

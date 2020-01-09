@@ -188,4 +188,23 @@ public class UserController {
         }
     }
 
+    @GetMapping(value = "/users/{email}/diff")
+    public ResponseEntity<?> getUserDiff(@PathVariable String email) {
+        try {
+            var fullUserSpecification = service.createDiff(email);
+            return new ResponseEntity<>(fullUserSpecification, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Oops, something went wrong while retrieving the user diff!", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping(value = "/users/{email}/accept")
+    public ResponseEntity<?> acceptChanges(@PathVariable String email) {
+        try {
+            service.acceptChanges(email);
+            return new ResponseEntity<>("Accepted all changes.", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Oops, something went wrong while accepting the changes!", HttpStatus.BAD_REQUEST);
+        }
+    }
 }
