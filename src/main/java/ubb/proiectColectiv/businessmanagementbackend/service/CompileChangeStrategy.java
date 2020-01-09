@@ -10,7 +10,7 @@ public interface CompileChangeStrategy {
     boolean CanCompile(ChangeModel changeModel);
 
     // chain multiple previews from multiple strategies in order to obtain the "diff" object
-    FullUserSpecification Preview(String userIdentification, ChangeModel changeModel);
+    void Preview(String userIdentification, FullUserSpecification baseRef, ChangeModel changeModel);
 
     // chain multiple persists from multiple strategies in order to empty changes object from an user entry
     // each call will update the db
