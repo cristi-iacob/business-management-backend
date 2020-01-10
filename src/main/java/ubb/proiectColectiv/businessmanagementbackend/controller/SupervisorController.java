@@ -141,7 +141,11 @@ public class SupervisorController {
     @PutMapping(value = "/supervisor/rejectRegistrationRequest")
     public ResponseEntity<String> rejectRegistrationRequest(@RequestHeader String token, @RequestBody String json) {
         try {
-            // TODO: 17-Dec-19  Check if user is supervisor using the token from the header
+            String email = TokenService.getKeyByToken(token);
+            if (!supervisorService.isSupervisor(String.valueOf(Objects.hash(email)))) {
+                logger.error("User is not a supervisor");
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
             supervisorService.rejectRegistrationRequest(json);
             logger.info("Registration Request of user " + json + " has been rejected");
             return new ResponseEntity<>(null, HttpStatus.OK);
