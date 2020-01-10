@@ -58,7 +58,7 @@ public class SupervisorController {
             logger.error("Token is not in the tokens list");
         } catch (Exception e) {
             logger.error(e.getMessage());
-            logger.error("Error at sending all unapproved users!");
+            logger.error("Error at sending all unapproved requests!");
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -153,5 +153,34 @@ public class SupervisorController {
             logger.error("Error at rejecting user " + json);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    /**
+     * Gets all blocked users
+     *
+     * @param token Token that the request uses
+     * @return Returns all blocked users in the body of the request
+     */
+    @GetMapping(value = "/supervisor/blockedUsers")
+    public ResponseEntity<String> getBlockedUsers(@RequestHeader String token) {
+        try {
+            String email = TokenService.getKeyByToken(token);
+            if (!supervisorService.isSupervisor(String.valueOf(Objects.hash(email)))) {
+                logger.error("User is not a supervisor");
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+            var blockedUsers = objectMapper.writeValueAsString(supervisorService.getBlockedUsers());
+            logger.info("Sending all blocked users!");
+            return new ResponseEntity<>(blockedUsers, HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            logger.error("Error at processing the json!");
+        } catch (NullPointerException e) {
+            logger.error("Token is not in the tokens list");
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            logger.error("Error at sending all blocked users!");
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 }
