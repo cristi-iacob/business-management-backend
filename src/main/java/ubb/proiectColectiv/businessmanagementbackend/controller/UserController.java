@@ -9,14 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ubb.proiectColectiv.businessmanagementbackend.model.ChangeModel;
-import ubb.proiectColectiv.businessmanagementbackend.model.LoginResponseValue;
-import ubb.proiectColectiv.businessmanagementbackend.model.TokenTransport;
-import ubb.proiectColectiv.businessmanagementbackend.model.User;
+import ubb.proiectColectiv.businessmanagementbackend.model.*;
 import ubb.proiectColectiv.businessmanagementbackend.service.TokenService;
 import ubb.proiectColectiv.businessmanagementbackend.service.UserService;
 import ubb.proiectColectiv.businessmanagementbackend.utils.MailServer;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -203,6 +201,16 @@ public class UserController {
         try {
             service.acceptChanges(email);
             return new ResponseEntity<>("Accepted all changes.", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Oops, something went wrong while accepting the changes!", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping(value = "rpc/patch-experience")
+    public ResponseEntity<?> patchExperience(@RequestBody HashMap<String, Object> map) {
+        try {
+            ProjectExperienceEntry ret = service.buildProjectExperienceEntryFromMap(map, map.get("newId").toString());
+            return new ResponseEntity<>(ret, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Oops, something went wrong while accepting the changes!", HttpStatus.BAD_REQUEST);
         }
