@@ -352,7 +352,9 @@ public class UserService {
         var allStrategies = CompileChangeStrategiesFactory.createStrategies();
         var changes = getChangeModelsForHash(String.valueOf(Objects.hash(email)));
         final FullUserSpecification fullUserSpecification = getFullUserSpecificationForEmail(email);
-
+        if (changes == null || changes.size() == 0) {
+            return fullUserSpecification;
+        }
         changes.forEach(c -> {
             if (c != null) {
                 allStrategies.forEach(s -> {
@@ -368,6 +370,9 @@ public class UserService {
 
     private static List<ChangeModel> getChangeModelsForHash(String hash) {
         var changeModelMaps = FirebaseUtils.getCollectionAsUpstreamData(Arrays.asList("User", hash, "edits"), false, HashMap.class);
+        if (changeModelMaps == null) {
+            return null;
+        }
         List<ChangeModel> changeModels = changeModelMaps.stream().filter(m -> m != null).map(m -> {
             var args = m.get("args");
             var changeType = ChangeType.valueOf(m.get("changeType").toString());
