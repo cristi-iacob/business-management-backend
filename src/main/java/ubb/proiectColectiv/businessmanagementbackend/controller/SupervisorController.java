@@ -58,7 +58,7 @@ public class SupervisorController {
             logger.error("Token is not in the tokens list");
         } catch (Exception e) {
             logger.error(e.getMessage());
-            logger.error("Error at sending all unapproved users!");
+            logger.error("Error at sending all unapproved requests!");
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -141,9 +141,94 @@ public class SupervisorController {
     @PutMapping(value = "/supervisor/rejectRegistrationRequest")
     public ResponseEntity<String> rejectRegistrationRequest(@RequestHeader String token, @RequestBody String json) {
         try {
-            // TODO: 17-Dec-19  Check if user is supervisor using the token from the header
+            String email = TokenService.getKeyByToken(token);
+            if (!supervisorService.isSupervisor(String.valueOf(Objects.hash(email)))) {
+                logger.error("User is not a supervisor");
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
             supervisorService.rejectRegistrationRequest(json);
             logger.info("Registration Request of user " + json + " has been rejected");
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        } catch (NullPointerException | JsonProcessingException e) {
+            logger.error("Error at rejecting user " + json);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Gets all blocked users
+     *
+     * @param token Token that the request uses
+     * @return Returns all blocked users in the body of the request
+     */
+    @GetMapping(value = "/supervisor/blockedUsers")
+    public ResponseEntity<String> getBlockedUsers(@RequestHeader String token) {
+        try {
+            String email = TokenService.getKeyByToken(token);
+            if (!supervisorService.isSupervisor(String.valueOf(Objects.hash(email)))) {
+                logger.error("User is not a supervisor");
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+            var blockedUsers = objectMapper.writeValueAsString(supervisorService.getBlockedUsers());
+            logger.info("Sending all blocked users!");
+            return new ResponseEntity<>(blockedUsers, HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            logger.error("Error at processing the json!");
+        } catch (NullPointerException e) {
+            logger.error("Token is not in the tokens list");
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            logger.error("Error at sending all blocked users!");
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Calls Service change the appreoved Status of a user
+     *
+     * @param token Token that the request uses
+     * @param json  hashedEmail to be approved
+     * @return Status of Ok or Internal_Server_Error
+     */
+    @PutMapping(value = "/supervisor/approveBlockedUser")
+    public ResponseEntity<String> approveBlockedUser(@RequestHeader String token, @RequestBody String json) {
+        try {
+            String email = TokenService.getKeyByToken(token);
+            if (!supervisorService.isSupervisor(String.valueOf(Objects.hash(email)))) {
+                logger.error("User is not a supervisor");
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+            supervisorService.approveBlockedUser(json);
+            logger.info("Blocked user " + json + " has been unblocked");
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            logger.error("Error at processing the json!");
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+
+        } catch (NullPointerException e) {
+            logger.error("Error at unblocking user " + json);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Calls Service to deletes user from Firebase
+     *
+     * @param token Token that the request uses
+     * @param json  Json containing a users hashed email
+     * @return Status of Ok or Internal_Server_Error
+     */
+    @PutMapping(value = "/supervisor/rejectBlockedUser")
+    public ResponseEntity<String> rejectBlockedUser(@RequestHeader String token, @RequestBody String json) {
+        try {
+            String email = TokenService.getKeyByToken(token);
+            if (!supervisorService.isSupervisor(String.valueOf(Objects.hash(email)))) {
+                logger.error("User is not a supervisor");
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+            supervisorService.rejectBlockedUser(json);
+            logger.info("Blocked user " + json + " has been rejected");
             return new ResponseEntity<>(null, HttpStatus.OK);
         } catch (NullPointerException | JsonProcessingException e) {
             logger.error("Error at rejecting user " + json);

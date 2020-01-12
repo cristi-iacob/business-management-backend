@@ -80,4 +80,46 @@ public class SupervisorService {
         HashMap<String, String> map = mapper.readValue(json, HashMap.class);
         FirebaseUtils.removeValue(Arrays.asList("User", map.get("hashedEmail")));
     }
+
+    /**
+     * Retrieves users which have blockedStatus == false
+     *
+     * @return list of users with blockedStatus == true
+     */
+    public List<User> getBlockedUsers() {
+        List<User> blockedUsers = new ArrayList<>();
+        HashMap<String, User> users = (HashMap) FirebaseUtils.getUpstreamData(Arrays.asList("User"));
+        User user;
+        for (Map.Entry<String, User> entry : users.entrySet()) {
+            user = mapper.convertValue(entry.getValue(), User.class);
+            if (user.getBlockedStatus() == true) {
+                user.setHashedEmail(entry.getKey());
+                blockedUsers.add(user);
+            }
+        }
+        return blockedUsers;
+    }
+
+    /**
+     * Sets users blockedStatus to true
+     *
+     * @param json Json containing users hashed email
+     * @throws JsonProcessingException If the recieved json is incorrect
+     */
+    public void approveBlockedUser(String json) throws JsonProcessingException {
+        HashMap<String, String> map = mapper.readValue(json, HashMap.class);
+        FirebaseUtils.setValue(Arrays.asList("User", map.get("hashedEmail"), "blockedStatus"), false);
+        FirebaseUtils.setValue(Arrays.asList("User", map.get("hashedEmail"), "failedLoginCounter"), 0);
+    }
+
+    /**
+     * Deletes user from Firebase
+     *
+     * @param json Json containing users hashed email
+     * @throws JsonProcessingException If the recieved json is incorrect
+     */
+    public void rejectBlockedUser(String json) throws JsonProcessingException {
+        HashMap<String, String> map = mapper.readValue(json, HashMap.class);
+        FirebaseUtils.removeValue(Arrays.asList("User", map.get("hashedEmail")));
+    }
 }
