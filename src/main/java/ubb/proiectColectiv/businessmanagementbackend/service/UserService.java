@@ -385,7 +385,9 @@ public class UserService {
     public static void acceptChanges(String email) {
         var allStrategies = CompileChangeStrategiesFactory.createStrategies();
         var changes = getChangeModelsForHash(String.valueOf(Objects.hash(email)));
-
+        if (changes == null) {
+            return;
+        }
         changes.forEach(c -> {
             if (c != null) {
                 allStrategies.forEach(s -> {
