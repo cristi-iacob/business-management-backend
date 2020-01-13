@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Getter
@@ -17,4 +18,9 @@ public class FullUserSpecification {
     private String firstName;
     private String lastName;
     private String region;
+    private final HashMap<String, Object> metadata = new HashMap<>();
+
+    public void addMetadata(String key, Object value) {
+        metadata.put(key, value);
+    }
 }
