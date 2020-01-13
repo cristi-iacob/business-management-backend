@@ -4,6 +4,7 @@ public enum Resource {
     PROJECT,
     SKILL,
     FIRST_NAME,
-    LAST_NAME
-    // etc
+    LAST_NAME,
+    CONSULTING_LEVEL,
+    REGION
 }
