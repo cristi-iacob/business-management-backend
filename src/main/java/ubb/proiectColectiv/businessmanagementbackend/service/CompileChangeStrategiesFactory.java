@@ -13,7 +13,8 @@ public class CompileChangeStrategiesFactory {
                 new DeleteProjectChangeStrategy(),
                 new UpdateFirstNameChangeStrategy(),
                 new UpdateLastNameChangeStrategy(),
-                new UpdateConsultingLevelChangeStrategy()
+                new UpdateConsultingLevelChangeStrategy(),
+                new UpdateRegionChangeStrategy()
         );
     }
 }
