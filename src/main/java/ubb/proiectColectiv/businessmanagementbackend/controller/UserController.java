@@ -144,7 +144,7 @@ public class UserController {
             var entries = service.getAllProjectExperienceEntriesForUserWithEmail(email);
             return new ResponseEntity<>(entries, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Oops, something went wrong while retrieving project experience!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Oops, something went wrong while retrieving project experience!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -162,7 +162,7 @@ public class UserController {
             var entries = service.getAllPossibleProjects();
             return new ResponseEntity<>(entries, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Oops, something went wrong while retrieving projects!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Oops, something went wrong while retrieving projects!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -172,7 +172,7 @@ public class UserController {
             var entries = service.getAllPossibleConsultingLevels();
             return new ResponseEntity<>(entries, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Oops, something went wrong while retrieving consulting levels!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Oops, something went wrong while retrieving consulting levels!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -182,7 +182,7 @@ public class UserController {
             var fullUserSpecification = service.getFullUserSpecificationForEmail(email);
             return new ResponseEntity<>(fullUserSpecification, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Oops, something went wrong while retrieving the user!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Oops, something went wrong while retrieving the user!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -192,7 +192,7 @@ public class UserController {
             var fullUserSpecification = service.createDiff(email);
             return new ResponseEntity<>(fullUserSpecification, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Oops, something went wrong while retrieving the user diff!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Oops, something went wrong while retrieving the user diff!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -202,7 +202,7 @@ public class UserController {
             service.acceptChanges(email);
             return new ResponseEntity<>("Accepted all changes.", HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Oops, something went wrong while accepting the changes!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Oops, something went wrong while accepting the changes!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -212,7 +212,17 @@ public class UserController {
             ProjectExperienceEntry ret = service.buildProjectExperienceEntryFromMap(map, map.get("newId").toString());
             return new ResponseEntity<>(ret, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Oops, something went wrong while accepting the changes!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Oops, something went wrong while accepting the changes!", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(value = "/regions")
+    public ResponseEntity<?> getAllRegions() {
+        try {
+            var regions = UserService.getAllPossibleRegions();
+            return new ResponseEntity<>(regions, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Oops, something went wrong while fetching regions!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
