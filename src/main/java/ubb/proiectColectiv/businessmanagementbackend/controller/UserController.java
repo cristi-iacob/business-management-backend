@@ -225,4 +225,14 @@ public class UserController {
             return new ResponseEntity<>("Oops, something went wrong while fetching regions!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping(value = "/skills")
+    public ResponseEntity<?> getAllSkills() {
+        try {
+            var skills = UserService.getAllPersistedSkills();
+            return new ResponseEntity<>(skills, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Oops, something went wrong pathing the skill with the given id!", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
