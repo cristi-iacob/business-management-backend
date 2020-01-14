@@ -9,12 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ubb.proiectColectiv.businessmanagementbackend.model.FullUserSpecification;
-import ubb.proiectColectiv.businessmanagementbackend.model.LoginResponseValue;
-import ubb.proiectColectiv.businessmanagementbackend.model.ProjectExperienceEntry;
-import ubb.proiectColectiv.businessmanagementbackend.model.TokenTransport;
-import ubb.proiectColectiv.businessmanagementbackend.model.User;
+import ubb.proiectColectiv.businessmanagementbackend.model.*;
+import ubb.proiectColectiv.businessmanagementbackend.service.TokenService;
 import ubb.proiectColectiv.businessmanagementbackend.service.UserService;
+import ubb.proiectColectiv.businessmanagementbackend.utils.MailServer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -60,7 +58,7 @@ public class UserController {
                     logger.info("User " + user.getEmail() + " is not registered");
                     break;
                 default:
-                    logger.info("User " + user.getEmail() + "logged in with token " + responseEntity.getBody());
+                    logger.info("User " + user.getEmail() + " logged in with token " + loginStatus.getToken());
             }
 
             return responseEntity;
@@ -86,7 +84,8 @@ public class UserController {
             if (registerStatus.equals("EXISTS")) {
                 logger.info("User " + user.getEmail() + " is already registered");
             } else {
-                logger.info("User " + user.getEmail() + " registered as " + Objects.hash(user.getEmail()) + " with token " + responseEntity.getBody());
+                MailServer.sendRegistrationEmailToAdmins();
+                logger.info("User " + user.getEmail() + " registered as " + Objects.hash(user.getEmail()));
             }
             return responseEntity;
         } catch (JsonProcessingException e) {
@@ -99,25 +98,22 @@ public class UserController {
      * Deletes users token
      *
      * @param token   Active token on this session
-     * @param content Email of user
      * @return Message of "DELETED", "NOT LOGGED" or "ERROR"
      */
-    @PostMapping(value = "/logout")
-    public ResponseEntity<?> logout(@RequestHeader("Authorization") String token, @RequestBody String content) {
+    @DeleteMapping(value = "/logout")
+    public ResponseEntity<?> logout(@RequestHeader String token) {
         try {
-            HashMap<?, ?> json = mapper.readValue(content, HashMap.class);
-            String logoutStatus = service.logout((String) json.get("email"), token);
-            ResponseEntity<?> responseEntity = new ResponseEntity<>(logoutStatus, HttpStatus.OK);
-
+            String email = TokenService.getKeyByToken(token);
+            String logoutStatus = service.logout(email, token);
             if (logoutStatus.equals("LOGGED OUT")) {
-                logger.info("User " + json.get("email") + " logged out with token " + json.get("token"));
+                logger.info("User " + email + " logged out with token: " + token);
             } else {
-                logger.warn("User " + json.get("email") + " tried logging out without being logged or having a token");
+                logger.warn("User " + email + " tried logging out without being logged or having a token");
             }
-            return responseEntity;
-        } catch (JsonProcessingException e) {
-            logger.error("error parsing logout request content");
-            return new ResponseEntity<>("ERROR", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(logoutStatus, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error at logging out!");
+            return new ResponseEntity<>("ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -141,21 +137,113 @@ public class UserController {
     }
 
     // TODO: 11-Dec-19 documentation
-    // TO DO: add authentication check at controller level
-    @GetMapping(value="/users/{email}/projects")
+    // TODO: 17-Dec-19 add authentication check at controller level
+    @GetMapping(value = "/users/{email}/projects")
     public ResponseEntity<?> getAllUsers(@PathVariable String email) {
         try {
             var entries = service.getAllProjectExperienceEntriesForUserWithEmail(email);
             return new ResponseEntity<>(entries, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Oops, something went wrong while retrieving project experience!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Oops, something went wrong while retrieving project experience!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @PostMapping(value="/users/{email}/create-pending-change")
-    public ResponseEntity<?> registerPendingChange(@PathVariable String email, @RequestBody FullUserSpecification userSpecification) {
-        service.registerPendingChangeForUserWitHEmail(userSpecification, email);
+    // TODO: 19-Dec-19 documentation
+    // TODO: 19-Dec-19 token check
+    @PostMapping(value = "/users/{email}/create-pending-changes")
+    public ResponseEntity<?> registerPendingChange(@PathVariable String email, @RequestBody List<ChangeModel> changeModels) {
+        service.registerPedingingChangesForUserWithEmail(changeModels, email);
         return null;
     }
 
+    @GetMapping(value = "/projects")
+    public ResponseEntity<?> getAllProjects() {
+        try {
+            var entries = service.getAllPossibleProjects();
+            return new ResponseEntity<>(entries, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Oops, something went wrong while retrieving projects!", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(value = "/levels")
+    public ResponseEntity<?> getAllLevels() {
+        try {
+            var entries = service.getAllPossibleConsultingLevels();
+            return new ResponseEntity<>(entries, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Oops, something went wrong while retrieving consulting levels!", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(value = "/users/{email}")
+    public ResponseEntity<?> getUser(@PathVariable String email) {
+        try {
+            var fullUserSpecification = service.getFullUserSpecificationForEmail(email);
+            return new ResponseEntity<>(fullUserSpecification, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Oops, something went wrong while retrieving the user!", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(value = "/users/{email}/diff")
+    public ResponseEntity<?> getUserDiff(@PathVariable String email) {
+        try {
+            var fullUserSpecification = service.createDiff(email);
+            return new ResponseEntity<>(fullUserSpecification, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Oops, something went wrong while retrieving the user diff!", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(value = "/users/{email}/accept")
+    public ResponseEntity<?> acceptChanges(@PathVariable String email) {
+        try {
+            service.acceptChanges(email);
+            return new ResponseEntity<>("Accepted all changes.", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Oops, something went wrong while accepting the changes!", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping(value = "rpc/patch-experience")
+    public ResponseEntity<?> patchExperience(@RequestBody HashMap<String, Object> map) {
+        try {
+            ProjectExperienceEntry ret = service.buildProjectExperienceEntryFromMap(map, map.get("newId").toString());
+            return new ResponseEntity<>(ret, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Oops, something went wrong while accepting the changes!", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(value = "/regions")
+    public ResponseEntity<?> getAllRegions() {
+        try {
+            var regions = UserService.getAllPossibleRegions();
+            return new ResponseEntity<>(regions, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Oops, something went wrong while fetching regions!", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @PostMapping(value = "rpc/patch-skill")
+    public ResponseEntity<?> patchSkill(@RequestBody HashMap<String, Object> map) {
+        try {
+            var skill = UserService.patchSkillWithId(map.get("id").toString());
+            return new ResponseEntity<>(skill, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Oops, something went wrong while patching the skill!", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    @GetMapping(value = "/skills")
+    public ResponseEntity<?> getAllSkills() {
+        try {
+            var skills = UserService.getAllPersistedSkills();
+            return new ResponseEntity<>(skills, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Oops, something went wrong pathing the skill with the given id!", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

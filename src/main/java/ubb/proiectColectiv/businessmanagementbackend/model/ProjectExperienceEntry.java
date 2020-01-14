@@ -1,6 +1,5 @@
 package ubb.proiectColectiv.businessmanagementbackend.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +13,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class ProjectExperienceEntry {
+    private String id;
     private int startDate;
     private int endDate;
     private String consultingLevel;
@@ -24,4 +24,5 @@ public class ProjectExperienceEntry {
     private String industry;
     private String clientName;
     private String clientAddress;
+    private ItemState itemState;
 }

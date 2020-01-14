@@ -39,7 +39,6 @@ public class RequestService {
             HashMap<String, String> request = mapper.convertValue(requestInDatabase, HashMap.class);
             //set request
             for (Map.Entry<String, String> entry : request.entrySet()) {
-                System.out.println(entry.getKey() + " | " + entry.getValue());
                 FirebaseUtils.setValue(Arrays.asList("User", hashedEmail, entry.getKey()), entry.getValue());
             }
             //delete request
