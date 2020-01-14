@@ -196,11 +196,11 @@ public class UserController {
         }
     }
 
-    @GetMapping(value = "/users/{email}/accept")
+    @PostMapping(value = "/users/{email}/accept")
     public ResponseEntity<?> acceptChanges(@PathVariable String email) {
         try {
             service.acceptChanges(email);
-            return new ResponseEntity<>("Accepted all changes.", HttpStatus.OK);
+            return null;
         } catch (Exception e) {
             return new ResponseEntity<>("Oops, something went wrong while accepting the changes!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -236,7 +236,7 @@ public class UserController {
             return new ResponseEntity<>("Oops, something went wrong while patching the skill!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @GetMapping(value = "/skills")
     public ResponseEntity<?> getAllSkills() {
         try {
