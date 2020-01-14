@@ -225,4 +225,14 @@ public class UserController {
             return new ResponseEntity<>("Oops, something went wrong while fetching regions!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping(value = "rpc/patch-skill")
+    public ResponseEntity<?> patchSkill(@RequestBody HashMap<String, Object> map) {
+        try {
+            var skill = UserService.patchSkillWithId(map.get("id").toString());
+            return new ResponseEntity<>(skill, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Oops, something went wrong while patching the skill!", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
