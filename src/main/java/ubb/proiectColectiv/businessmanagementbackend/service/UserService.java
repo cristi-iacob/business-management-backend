@@ -344,7 +344,7 @@ public class UserService {
         return entries;
     }
 
-    private static List<PersistedSkill> getAllPersistedSkills() {
+    public static List<PersistedSkill> getAllPersistedSkills() {
         var entries = new ArrayList<PersistedSkill>();
         var args = FirebaseUtils.getCollectionAsUpstreamData(Arrays.asList("Skill"), false, HashMap.class);
 

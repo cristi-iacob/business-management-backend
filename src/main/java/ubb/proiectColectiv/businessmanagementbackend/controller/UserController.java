@@ -226,6 +226,7 @@ public class UserController {
         }
     }
 
+
     @PostMapping(value = "rpc/patch-skill")
     public ResponseEntity<?> patchSkill(@RequestBody HashMap<String, Object> map) {
         try {
@@ -233,6 +234,14 @@ public class UserController {
             return new ResponseEntity<>(skill, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Oops, something went wrong while patching the skill!", HttpStatus.INTERNAL_SERVER_ERROR);
+
+    @GetMapping(value = "/skills")
+    public ResponseEntity<?> getAllSkills() {
+        try {
+            var skills = UserService.getAllPersistedSkills();
+            return new ResponseEntity<>(skills, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Oops, something went wrong pathing the skill with the given id!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
