@@ -306,12 +306,26 @@ public class UserService {
                             .area(targetSkillArea.getName())
                             .Id(String.valueOf(i))
                             .name(targetPersistedSkill.getName())
+                            .itemState(ItemState.PERSISTED)
                             .build();
                     entries.add(skill);
                 }
             }
         }
         return entries;
+    }
+
+    public static Skill patchSkillWithId(String id) {
+        var allSkillAreas = getAllPossibleSkillAreas();
+        var allPersistedSkills = getAllPersistedSkills();
+        var targetPersisted = allPersistedSkills.stream().filter(p -> p.getId().equals(id)).findFirst().get();
+        var targetSkillArea = allSkillAreas.stream().filter(sa -> sa.getId().equals(targetPersisted.getSkillAreaId())).findFirst().get();
+        return Skill.builder()
+                .itemState(ItemState.PATCHED)
+                .area(targetSkillArea.getName())
+                .Id(String.valueOf(new Date().getTime()))
+                .name(targetPersisted.getName())
+                .build();
     }
 
     public static List<SkillArea> getAllPossibleSkillAreas() {
@@ -400,5 +414,10 @@ public class UserService {
 
         var hash = String.valueOf(Objects.hash(email));
         FirebaseUtils.setValue(Arrays.asList("User", hash, "edits"), null);
+    }
+
+    public static String getNextUserSkillId() {
+        var allEntries = FirebaseUtils.getCollectionAsUpstreamData(Arrays.asList("UserSkills"), false, Object.class);
+        return String.valueOf(allEntries.size());
     }
 }

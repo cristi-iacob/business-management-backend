@@ -12,4 +12,5 @@ public class Skill {
     private String Id;
     private String name;
     private String area;
+    private ItemState itemState;
 }
