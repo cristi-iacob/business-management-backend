@@ -7,32 +7,32 @@ import ubb.proiectColectiv.businessmanagementbackend.service.UserService;
 import ubb.proiectColectiv.businessmanagementbackend.utils.FirebaseUtils;
 
 import java.util.Arrays;
-import java.util.Objects;
+import java.util.HashMap;
 
-public class AddProjectChangeStrategy extends BaseCompileChangeStrategy {
+public class AddSkillChangeStrategy extends BaseCompileChangeStrategy {
     @Override
     public boolean CanCompile(ChangeModel changeModel) {
-        return changeModel.getResource().equals(Resource.PROJECT)
+        return changeModel.getResource().equals(Resource.SKILL)
                 && changeModel.getChangeType().equals(ChangeType.ADD);
     }
 
     @Override
     public void Preview(String userIdentification, FullUserSpecification baseRef, ChangeModel changeModel) {
         var args = changeModel.getArgs();
-        var newId = args.get("newId").toString();
-        var userId = String.valueOf(Objects.hash(userIdentification));
-        args.put("userId", userId);
-        var newProjectExperience = UserService.buildProjectExperienceEntryFromMap(changeModel.getArgs(), newId);
-        newProjectExperience.setItemState(ItemState.ADDED);
-        baseRef.getProjectExperience().add(newProjectExperience);
+        var skillId = args.get("id").toString();
+        var skill = UserService.patchSkillWithId(skillId);
+        skill.setItemState(ItemState.ADDED);
+        baseRef.getSkills().add(skill);
     }
 
     @Override
     public void Persist(String userIdentification, ChangeModel changeModel) {
         var args = changeModel.getArgs();
-        var projectExperienceId = args.get("newId").toString();
-        var userId = String.valueOf(Objects.hash(userIdentification));
-        args.put("userId", userId);
-        FirebaseUtils.setValue(Arrays.asList("ProjectExperience", projectExperienceId), changeModel.getArgs());
+        var skillId = args.get("id").toString();
+        var nextId = UserService.getNextUserSkillId();
+        var map = new HashMap<String, String>();
+        map.put("userHash", getUserHash(userIdentification));
+        map.put("skillId", skillId);
+        FirebaseUtils.setValue(Arrays.asList("UserSkills", nextId), map);
     }
 }

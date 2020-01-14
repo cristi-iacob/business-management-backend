@@ -15,7 +15,8 @@ public class CompileChangeStrategiesFactory {
                 new UpdateLastNameChangeStrategy(),
                 new UpdateConsultingLevelChangeStrategy(),
                 new UpdateRegionChangeStrategy(),
-                new DeleteSkillChangeStrategy()
+                new DeleteSkillChangeStrategy(),
+                new AddSkillChangeStrategy()
         );
     }
 }
