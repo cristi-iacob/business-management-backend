@@ -234,7 +234,9 @@ public class UserController {
             return new ResponseEntity<>(skill, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Oops, something went wrong while patching the skill!", HttpStatus.INTERNAL_SERVER_ERROR);
-
+        }
+    }
+    
     @GetMapping(value = "/skills")
     public ResponseEntity<?> getAllSkills() {
         try {
