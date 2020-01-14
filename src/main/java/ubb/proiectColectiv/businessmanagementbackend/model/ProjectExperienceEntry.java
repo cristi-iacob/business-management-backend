@@ -24,6 +24,4 @@ public class ProjectExperienceEntry {
     private String industry;
     private String clientName;
     private String clientAddress;
-
-    public ProjectExperienceEntry() {}
 }
