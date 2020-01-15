@@ -33,6 +33,9 @@ public class AddSkillChangeStrategy extends BaseCompileChangeStrategy {
         var map = new HashMap<String, String>();
         map.put("userHash", getUserHash(userIdentification));
         map.put("skillId", skillId);
-        FirebaseUtils.setValue(Arrays.asList("UserSkills", nextId), map);
+        var timer = FirebaseUtils.setValue(Arrays.asList("UserSkills", nextId), map);
+        while(!timer.isDone() || timer.isCancelled()) {
+
+        }
     }
 }

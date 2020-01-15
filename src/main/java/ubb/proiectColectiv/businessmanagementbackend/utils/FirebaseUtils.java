@@ -1,6 +1,7 @@
 package ubb.proiectColectiv.businessmanagementbackend.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.core.ApiFuture;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import lombok.SneakyThrows;
@@ -73,7 +74,7 @@ public class FirebaseUtils {
     }
 
     // TODO: 11-Dec-19 documentation
-    public static void setValue(List<String> parameters, Object newValue) {
+    public static ApiFuture<Void> setValue(List<String> parameters, Object newValue) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
         for (String parameter : parameters) {
@@ -81,7 +82,7 @@ public class FirebaseUtils {
         }
 
         logger.trace(ref.toString());
-        ref.setValueAsync(newValue);
+        return ref.setValueAsync(newValue);
     }
 
     // TODO: 11-Dec-19 documentation
