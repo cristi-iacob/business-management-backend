@@ -75,6 +75,7 @@
                 <version>2.2.0</version>
                 <configuration>
                     <deploy.projectId>business-management-backend</deploy.projectId>
+                    <deploy.version>GCLOUD_CONFIG</deploy.version>
                 </configuration>
             </plugin>
         </plugins>
