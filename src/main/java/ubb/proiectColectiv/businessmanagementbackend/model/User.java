@@ -10,6 +10,7 @@ import lombok.Setter;
 public class User {
 
     private Boolean approvedStatus;
+    private Boolean approvedProfileChange;
     private Boolean blockedStatus;
     private Integer consultingLevelId;
     private String email;
