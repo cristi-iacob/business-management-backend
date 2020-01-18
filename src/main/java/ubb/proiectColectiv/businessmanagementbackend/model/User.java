@@ -14,6 +14,7 @@ public class User {
     private Boolean blockedStatus;
     private Integer consultingLevelId;
     private String email;
+    private Object edits;
     private String hashedEmail;
     private Integer failedLoginCounter;
     private String firstName;

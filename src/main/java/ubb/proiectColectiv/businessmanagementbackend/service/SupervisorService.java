@@ -38,17 +38,17 @@ public class SupervisorService {
      * @return list of users with appreovedProfileChange == false
      */
     public List<User> getProfileEdits() {
-        List<User> unapprovedChange = new ArrayList<>();
+        List<User> profileEdits = new ArrayList<>();
         HashMap<String, User> users = (HashMap) FirebaseUtils.getUpstreamData(Arrays.asList("User"));
         User user;
         for (Map.Entry<String, User> entry : users.entrySet()) {
             user = mapper.convertValue(entry.getValue(), User.class);
-            if (user.getApprovedProfileChange() == false) {
+            if (user.getEdits() != null) {
                 user.setHashedEmail(entry.getKey());
-                unapprovedChange.add(user);
+                profileEdits.add(user);
             }
         }
-        return unapprovedChange;
+        return profileEdits;
     }
 
     /**

@@ -78,16 +78,16 @@ public class SupervisorController {
                 logger.error("User is not a supervisor");
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
-            var approvalRequests = objectMapper.writeValueAsString(supervisorService.getProfileEdits());
-            logger.info("Sending all approval requests!");
-            return new ResponseEntity<>(approvalRequests, HttpStatus.OK);
+            var profileEdits = objectMapper.writeValueAsString(supervisorService.getProfileEdits());
+            logger.info("Sending all profile edits!");
+            return new ResponseEntity<>(profileEdits, HttpStatus.OK);
         } catch (JsonProcessingException e) {
             logger.error("Error at processing the json!");
         } catch (NullPointerException e) {
             logger.error("Token is not in the tokens list");
         } catch (Exception e) {
             logger.error(e.getMessage());
-            logger.error("Error at sending all unapproved requests!");
+            logger.error("Error at sending all profile edits!");
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
