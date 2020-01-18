@@ -33,6 +33,25 @@ public class SupervisorService {
     }
 
     /**
+     * Retrieves users which have approvedProfileChange == false
+     *
+     * @return list of users with appreovedProfileChange == false
+     */
+    public List<User> getProfileEdits() {
+        List<User> profileEdits = new ArrayList<>();
+        HashMap<String, User> users = (HashMap) FirebaseUtils.getUpstreamData(Arrays.asList("User"));
+        User user;
+        for (Map.Entry<String, User> entry : users.entrySet()) {
+            user = mapper.convertValue(entry.getValue(), User.class);
+            if (user.getEdits() != null) {
+                user.setHashedEmail(entry.getKey());
+                profileEdits.add(user);
+            }
+        }
+        return profileEdits;
+    }
+
+    /**
      * Checks if user is a supervisor
      *
      * @param hashedEmail

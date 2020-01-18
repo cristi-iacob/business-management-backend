@@ -65,6 +65,35 @@ public class SupervisorController {
     }
 
     /**
+     * Gets all users with unapproved profile edits
+     *
+     * @param token Token that the request uses
+     * @return Returns all unapporved users in the body of the request
+     */
+    @GetMapping(value = "/supervisor/profileEdits")
+    public ResponseEntity<String> getProfileEdits(@RequestHeader String token) {
+        try {
+            String email = TokenService.getKeyByToken(token);
+            if (!supervisorService.isSupervisor(String.valueOf(Objects.hash(email)))) {
+                logger.error("User is not a supervisor");
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+            var profileEdits = objectMapper.writeValueAsString(supervisorService.getProfileEdits());
+            logger.info("Sending all profile edits!");
+            return new ResponseEntity<>(profileEdits, HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            logger.error("Error at processing the json!");
+        } catch (NullPointerException e) {
+            logger.error("Token is not in the tokens list");
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            logger.error("Error at sending all profile edits!");
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
      * Checks if token belongs to a user
      *
      * @param token Token that the request uses
