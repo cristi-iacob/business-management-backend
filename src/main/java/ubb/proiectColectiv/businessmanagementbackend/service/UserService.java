@@ -62,23 +62,19 @@ public class UserService {
 
     /**
      * Creates and saves a user in firebase with email, password, approvalStatus = false, blockedStatus = false, failedLoginCounter = 0
-     * @param email Email of the user to be registered
-     * @param password Password of the user to be registered
+     * @param registeredUser User that wants to register with his credentials
      * @return "REGISTERED" if registration was successful, "EXISTS" if a user with this email already exists
      */
-    public String register(String email, String password) {
-        Object userInDataBase = FirebaseUtils.getUpstreamData(Arrays.asList("User", String.valueOf(Objects.hash(email)), "password"));
+    public String register(User registeredUser) {
+        Object userInDataBase = FirebaseUtils.getUpstreamData(Arrays.asList("User", String.valueOf(Objects.hash(registeredUser.getEmail())), "password"));
 
         if (userInDataBase != null)
             return "EXISTS";
 
-        User user = new User();
-        user.setApprovedStatus(false);
-        user.setBlockedStatus(false);
-        user.setEmail(email);
-        user.setFailedLoginCounter(0);
-        user.setPassword(password);
-        FirebaseUtils.setValue(Arrays.asList("User", String.valueOf(Objects.hash(email))), user);
+        registeredUser.setApprovedStatus(false);
+        registeredUser.setBlockedStatus(false);
+        registeredUser.setFailedLoginCounter(0);
+        FirebaseUtils.setValue(Arrays.asList("User", String.valueOf(Objects.hash(registeredUser.getEmail()))), registeredUser);
         return "REGISTERED";
     }
 

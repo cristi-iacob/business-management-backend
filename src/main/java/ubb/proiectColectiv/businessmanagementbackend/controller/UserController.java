@@ -78,7 +78,7 @@ public class UserController {
     public ResponseEntity<?> register(@RequestBody String content) {
         try {
             User user = mapper.readValue(content, User.class);
-            String registerStatus = service.register(user.getEmail(), user.getPassword());
+            String registerStatus = service.register(user);
             ResponseEntity<?> responseEntity = new ResponseEntity<>(registerStatus, HttpStatus.OK);
 
             if (registerStatus.equals("EXISTS")) {
