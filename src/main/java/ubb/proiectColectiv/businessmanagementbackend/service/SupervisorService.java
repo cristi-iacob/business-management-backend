@@ -9,7 +9,6 @@ import ubb.proiectColectiv.businessmanagementbackend.model.User;
 import ubb.proiectColectiv.businessmanagementbackend.model.UserSkill;
 import ubb.proiectColectiv.businessmanagementbackend.utils.FirebaseUtils;
 
-import java.io.DataInput;
 import java.io.IOException;
 import java.util.*;
 
