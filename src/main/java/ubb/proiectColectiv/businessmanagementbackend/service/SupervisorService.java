@@ -1,11 +1,15 @@
 package ubb.proiectColectiv.businessmanagementbackend.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.var;
 import org.springframework.stereotype.Service;
 import ubb.proiectColectiv.businessmanagementbackend.model.User;
+import ubb.proiectColectiv.businessmanagementbackend.model.UserSkill;
 import ubb.proiectColectiv.businessmanagementbackend.utils.FirebaseUtils;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -140,5 +144,25 @@ public class SupervisorService {
     public void rejectBlockedUser(String json) throws JsonProcessingException {
         HashMap<String, String> map = mapper.readValue(json, HashMap.class);
         FirebaseUtils.removeValue(Arrays.asList("User", map.get("hashedEmail")));
+    }
+
+    /**
+     * Get users that have the skill with that skillId
+     *
+     * @param skillId skill to be searched after
+     * @return list of users with that skill
+     */
+    public List<User> getUsersBySkill(String skillId) throws IOException {
+        List<User> usersWithThatSkill = new ArrayList<User>();
+        HashMap<String, User> users = (HashMap) FirebaseUtils.getUpstreamData(Arrays.asList("User"));
+        var userSkills = FirebaseUtils.getCollectionAsUpstreamData(Arrays.asList("UserSkills"), false, HashMap.class);
+        List<UserSkill> userSkillList = mapper.convertValue(userSkills, new TypeReference<List<UserSkill>>() {});
+        for (var  skill : userSkillList) {
+            if (skillId.equals(skill.getSkillId())) {
+                User user = mapper.convertValue(users.get(skill.getUserHash()), User.class);
+                usersWithThatSkill.add(user);
+            }
+        }
+        return usersWithThatSkill;
     }
 }
