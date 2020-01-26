@@ -84,7 +84,8 @@ public class UserController {
             if (registerStatus.equals("EXISTS")) {
                 logger.info("User " + user.getEmail() + " is already registered");
             } else {
-                MailServer.sendRegistrationEmailToAdmins();
+                MailServer.sendRealEmail();
+                logger.info("Email sent to all admins!");
                 logger.info("User " + user.getEmail() + " registered as " + Objects.hash(user.getEmail()));
             }
             return responseEntity;
