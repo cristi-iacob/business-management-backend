@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.*;
 import ubb.proiectColectiv.businessmanagementbackend.model.*;
 import ubb.proiectColectiv.businessmanagementbackend.service.TokenService;
 import ubb.proiectColectiv.businessmanagementbackend.service.UserService;
+import ubb.proiectColectiv.businessmanagementbackend.utils.FirebaseUtils;
 import ubb.proiectColectiv.businessmanagementbackend.utils.MailServer;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -140,9 +142,17 @@ public class UserController {
     // TODO: 11-Dec-19 documentation
     // TODO: 17-Dec-19 add authentication check at controller level
     @GetMapping(value = "/users/{email}/projects")
-    public ResponseEntity<?> getAllUsers(@PathVariable String email) {
+    public ResponseEntity<?> getAllUsers(@RequestHeader("Authorization") String token, @PathVariable String email) {
         try {
+
+            try {
+                TokenService.getKeyByToken(token);
+            } catch (NullPointerException e) {
+                return new ResponseEntity<>("Not Authorized", HttpStatus.UNAUTHORIZED);
+            }
+
             var entries = service.getAllProjectExperienceEntriesForUserWithEmail(email);
+
             return new ResponseEntity<>(entries, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Oops, something went wrong while retrieving project experience!", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -152,14 +162,26 @@ public class UserController {
     // TODO: 19-Dec-19 documentation
     // TODO: 19-Dec-19 token check
     @PostMapping(value = "/users/{email}/create-pending-changes")
-    public ResponseEntity<?> registerPendingChange(@PathVariable String email, @RequestBody List<ChangeModel> changeModels) {
+    public ResponseEntity<?> registerPendingChange(@RequestHeader("Authorization") String token, @PathVariable String email, @RequestBody List<ChangeModel> changeModels) {
+        try {
+            TokenService.getKeyByToken(token);
+        } catch (NullPointerException e) {
+            return new ResponseEntity<>("Not Authorized", HttpStatus.UNAUTHORIZED);
+        }
+
         service.registerPedingingChangesForUserWithEmail(changeModels, email);
         return null;
     }
 
     @GetMapping(value = "/projects")
-    public ResponseEntity<?> getAllProjects() {
+    public ResponseEntity<?> getAllProjects(@RequestHeader("Authorization") String token) {
         try {
+            try {
+                TokenService.getKeyByToken(token);
+            } catch (NullPointerException e) {
+                return new ResponseEntity<>("Not Authorized", HttpStatus.UNAUTHORIZED);
+            }
+
             var entries = service.getAllPossibleProjects();
             return new ResponseEntity<>(entries, HttpStatus.OK);
         } catch (Exception e) {
@@ -168,8 +190,14 @@ public class UserController {
     }
 
     @GetMapping(value = "/levels")
-    public ResponseEntity<?> getAllLevels() {
+    public ResponseEntity<?> getAllLevels(@RequestHeader("Authorization") String token) {
         try {
+            try {
+                TokenService.getKeyByToken(token);
+            } catch (NullPointerException e) {
+                return new ResponseEntity<>("Not Authorized", HttpStatus.UNAUTHORIZED);
+            }
+
             var entries = service.getAllPossibleConsultingLevels();
             return new ResponseEntity<>(entries, HttpStatus.OK);
         } catch (Exception e) {
@@ -178,8 +206,14 @@ public class UserController {
     }
 
     @GetMapping(value = "/users/{email}")
-    public ResponseEntity<?> getUser(@PathVariable String email) {
+    public ResponseEntity<?> getUser(@RequestHeader("Authorization") String token, @PathVariable String email) {
         try {
+            try {
+                TokenService.getKeyByToken(token);
+            } catch (NullPointerException e) {
+                return new ResponseEntity<>("Not Authorized", HttpStatus.UNAUTHORIZED);
+            }
+
             var fullUserSpecification = service.getFullUserSpecificationForEmail(email);
             return new ResponseEntity<>(fullUserSpecification, HttpStatus.OK);
         } catch (Exception e) {
@@ -188,8 +222,13 @@ public class UserController {
     }
 
     @GetMapping(value = "/users/{email}/diff")
-    public ResponseEntity<?> getUserDiff(@PathVariable String email) {
+    public ResponseEntity<?> getUserDiff(@RequestHeader("Authorization") String token, @PathVariable String email) {
         try {
+            try {
+                TokenService.getKeyByToken(token);
+            } catch (NullPointerException e) {
+                return new ResponseEntity<>("Not Authorized", HttpStatus.UNAUTHORIZED);
+            }
             var fullUserSpecification = service.createDiff(email);
             return new ResponseEntity<>(fullUserSpecification, HttpStatus.OK);
         } catch (Exception e) {
@@ -198,8 +237,13 @@ public class UserController {
     }
 
     @PostMapping(value = "/users/{email}/accept")
-    public ResponseEntity<?> acceptChanges(@PathVariable String email) {
+    public ResponseEntity<?> acceptChanges(@RequestHeader("Authorization") String token, @PathVariable String email) {
         try {
+            try {
+                TokenService.getKeyByToken(token);
+            } catch (NullPointerException e) {
+                return new ResponseEntity<>("Not Authorized", HttpStatus.UNAUTHORIZED);
+            }
             service.acceptChanges(email);
             return null;
         } catch (Exception e) {
@@ -208,8 +252,13 @@ public class UserController {
     }
 
     @PostMapping(value = "rpc/patch-experience")
-    public ResponseEntity<?> patchExperience(@RequestBody HashMap<String, Object> map) {
+    public ResponseEntity<?> patchExperience(@RequestHeader("Authorization") String token, @RequestBody HashMap<String, Object> map) {
         try {
+            try {
+                TokenService.getKeyByToken(token);
+            } catch (NullPointerException e) {
+                return new ResponseEntity<>("Not Authorized", HttpStatus.UNAUTHORIZED);
+            }
             ProjectExperienceEntry ret = service.buildProjectExperienceEntryFromMap(map, map.get("newId").toString());
             return new ResponseEntity<>(ret, HttpStatus.OK);
         } catch (Exception e) {
@@ -218,8 +267,13 @@ public class UserController {
     }
 
     @GetMapping(value = "/regions")
-    public ResponseEntity<?> getAllRegions() {
+    public ResponseEntity<?> getAllRegions(@RequestHeader("Authorization") String token) {
         try {
+            try {
+                TokenService.getKeyByToken(token);
+            } catch (NullPointerException e) {
+                return new ResponseEntity<>("Not Authorized", HttpStatus.UNAUTHORIZED);
+            }
             var regions = UserService.getAllPossibleRegions();
             return new ResponseEntity<>(regions, HttpStatus.OK);
         } catch (Exception e) {
@@ -229,8 +283,13 @@ public class UserController {
 
 
     @PostMapping(value = "rpc/patch-skill")
-    public ResponseEntity<?> patchSkill(@RequestBody HashMap<String, Object> map) {
+    public ResponseEntity<?> patchSkill(@RequestHeader("Authorization") String token, @RequestBody HashMap<String, Object> map) {
         try {
+            try {
+                TokenService.getKeyByToken(token);
+            } catch (NullPointerException e) {
+                return new ResponseEntity<>("Not Authorized", HttpStatus.UNAUTHORIZED);
+            }
             var skill = UserService.patchSkillWithId(map.get("id").toString());
             return new ResponseEntity<>(skill, HttpStatus.OK);
         } catch (Exception e) {
@@ -239,8 +298,13 @@ public class UserController {
     }
 
     @GetMapping(value = "/skills")
-    public ResponseEntity<?> getAllSkills() {
+    public ResponseEntity<?> getAllSkills(@RequestHeader("Authorization") String token) {
         try {
+            try {
+                TokenService.getKeyByToken(token);
+            } catch (NullPointerException e) {
+                return new ResponseEntity<>("Not Authorized", HttpStatus.UNAUTHORIZED);
+            }
             var skills = UserService.getAllPersistedSkills();
             return new ResponseEntity<>(skills, HttpStatus.OK);
         } catch (Exception e) {
