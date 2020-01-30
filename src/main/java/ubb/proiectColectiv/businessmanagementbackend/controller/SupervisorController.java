@@ -79,7 +79,7 @@ public class SupervisorController {
                 logger.error("User is not a supervisor");
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
-            var profileEdits = objectMapper.writeValueAsString(supervisorService.getProfileEdits());
+            var profileEdits = objectMapper.writeValueAsString(supervisorService.getProfileEdits(String.valueOf(Objects.hash(email))));
             logger.info("Sending all profile edits!");
             return new ResponseEntity<>(profileEdits, HttpStatus.OK);
         } catch (JsonProcessingException e) {

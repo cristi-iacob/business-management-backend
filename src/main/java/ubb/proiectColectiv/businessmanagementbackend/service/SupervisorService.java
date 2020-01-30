@@ -41,14 +41,11 @@ public class SupervisorService {
      *
      * @return list of users with appreovedProfileChange == false
      */
-    public List<User> getProfileEdits() {
+    public List<User> getProfileEdits(String id) {
         List<User> profileEdits = new ArrayList<>();
-        HashMap<String, User> users = (HashMap) FirebaseUtils.getUpstreamData(Arrays.asList("User"));
-        User user;
-        for (Map.Entry<String, User> entry : users.entrySet()) {
-            user = mapper.convertValue(entry.getValue(), User.class);
+        List<User> supervisedUsers = getUsersForSupervisor(id);
+        for (User user : supervisedUsers) {
             if (user.getEdits() != null) {
-                user.setHashedEmail(entry.getKey());
                 profileEdits.add(user);
             }
         }
@@ -75,8 +72,8 @@ public class SupervisorService {
         if (!isSupervisor(id)) {
             return null;
         }
-        HashMap<String, String> userData = (HashMap) FirebaseUtils.getUpstreamData(Arrays.asList("User", id, "usersList"));
-        for (String email : userData.values()) {
+        HashMap<String, String> supervisedUsers = (HashMap) FirebaseUtils.getUpstreamData(Arrays.asList("User", id, "usersList"));
+        for (String email : supervisedUsers.values()) {
             HashMap<String, Object> userAsMap = (HashMap) FirebaseUtils.getUpstreamData(Arrays.asList("User", String.valueOf(Objects.hash(email))));
             User user = mapper.convertValue(userAsMap, User.class);
             user.setHashedEmail(String.valueOf(Objects.hash(email)));
