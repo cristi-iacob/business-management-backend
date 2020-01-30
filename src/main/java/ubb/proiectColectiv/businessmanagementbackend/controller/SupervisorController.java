@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ubb.proiectColectiv.businessmanagementbackend.model.User;
 import ubb.proiectColectiv.businessmanagementbackend.service.SupervisorService;
 import ubb.proiectColectiv.businessmanagementbackend.service.TokenService;
 
@@ -117,16 +118,17 @@ public class SupervisorController {
     }
 
     // TODO: 11-Dec-19 documentation
-    @GetMapping(value = "/supervisor/{id}/users")
-    public ResponseEntity<String> getUsersForSupervisor(@PathVariable("id") String id) {
+    @GetMapping(value = "/supervisor/{email}/users")
+    public ResponseEntity<List<User>> getUsersForSupervisor(@PathVariable("email") String email) {
         try {
             logger.info("Getting all users for a supervisor");
-            List<String> users = supervisorService.getUsersForSupervisor(id);
+            List<User> users = supervisorService.getUsersForSupervisor(String.valueOf(Objects.hash(email)));
             if (users == null) {
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
-            return new ResponseEntity<>(objectMapper.writeValueAsString(users), HttpStatus.OK);
+            return new ResponseEntity<>(users, HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error("Error at sending all user for supervisor");
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
@@ -153,7 +155,6 @@ public class SupervisorController {
         } catch (JsonProcessingException e) {
             logger.error("Error at processing the json!");
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-
         } catch (NullPointerException e) {
             logger.error("Error at approving user " + json);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -234,7 +235,6 @@ public class SupervisorController {
         } catch (JsonProcessingException e) {
             logger.error("Error at processing the json!");
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-
         } catch (NullPointerException e) {
             logger.error("Error at unblocking user " + json);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -268,7 +268,7 @@ public class SupervisorController {
     /**
      * Gets all users that have skillId in UserSkill
      *
-     * @param token Token that the request uses
+     * @param token   Token that the request uses
      * @param skillId Id of the skill to be searched by
      * @return Status Ok is there were people with this skillId or if there were not, BAD_REQUEST if user is not supervisor
      * INTERNAL_SERVER_ERROR if something else went wrong

@@ -70,14 +70,17 @@ public class SupervisorService {
     }
 
     // TODO: 11-Dec-19 documentation
-    public List<String> getUsersForSupervisor(String id) {
-        List<String> retList = new ArrayList<>();
+    public List<User> getUsersForSupervisor(String id) {
+        List<User> retList = new ArrayList<>();
         if (!isSupervisor(id)) {
             return null;
         }
-        HashMap<String, Object> userData = (HashMap) FirebaseUtils.getUpstreamData(Arrays.asList("User", id, "usersList"));
-        for (Object email : userData.values()) {
-            retList.add((String) email);
+        HashMap<String, String> userData = (HashMap) FirebaseUtils.getUpstreamData(Arrays.asList("User", id, "usersList"));
+        for (String email : userData.values()) {
+            HashMap<String, Object> userAsMap = (HashMap) FirebaseUtils.getUpstreamData(Arrays.asList("User", String.valueOf(Objects.hash(email))));
+            User user = mapper.convertValue(userAsMap, User.class);
+            user.setHashedEmail(String.valueOf(Objects.hash(email)));
+            retList.add(user);
         }
         return retList;
     }
@@ -156,8 +159,9 @@ public class SupervisorService {
         List<User> usersWithThatSkill = new ArrayList<User>();
         HashMap<String, User> users = (HashMap) FirebaseUtils.getUpstreamData(Arrays.asList("User"));
         var userSkills = FirebaseUtils.getCollectionAsUpstreamData(Arrays.asList("UserSkills"), false, HashMap.class);
-        List<UserSkill> userSkillList = mapper.convertValue(userSkills, new TypeReference<List<UserSkill>>() {});
-        for (var  skill : userSkillList) {
+        List<UserSkill> userSkillList = mapper.convertValue(userSkills, new TypeReference<List<UserSkill>>() {
+        });
+        for (var skill : userSkillList) {
             if (skillId.equals(skill.getSkillId())) {
                 User user = mapper.convertValue(users.get(skill.getUserHash()), User.class);
                 usersWithThatSkill.add(user);
