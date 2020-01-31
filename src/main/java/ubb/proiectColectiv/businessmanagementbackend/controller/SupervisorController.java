@@ -273,8 +273,8 @@ public class SupervisorController {
      * @return Status Ok is there were people with this sskillId or if there were not, BAD_REQUEST if user is not supervisor
      * INTERNAL_SERVER_ERROR if something else went wrong
      */
-    @GetMapping(value = "/supervisor/getBySkill")
-    public ResponseEntity<String> getBySkill(@RequestHeader(value = "token") String token, @RequestHeader(value = "skillId") String skillId) {
+    @GetMapping(value = "/supervisor/getBySkill/skillId")
+    public ResponseEntity<String> getBySkill(@RequestHeader String token, @PathVariable String skillId) {
         try {
             String email = TokenService.getKeyByToken(token);
             if (!supervisorService.isSupervisor(String.valueOf(Objects.hash(email)))) {
