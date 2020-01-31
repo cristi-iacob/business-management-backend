@@ -267,15 +267,16 @@ public class SupervisorController {
     }
 
     @PostMapping(value = "/supervisor/getBySkill")
-    public ResponseEntity<String> getBySkill(@RequestBody HashMap<String, Object> map) {
+    public ResponseEntity<Object> getBySkill(@RequestBody HashMap<String, Object> map) {
         try {
             logger.error("A" + map.toString());
             var skillId = map.get("skillId").toString();
             logger.error("B" + skillId);
-            var usersWithThatSkill = objectMapper.writeValueAsString(supervisorService.getUsersBySkill(skillId));
-            logger.error("C" + usersWithThatSkill);
+            //var usersWithThatSkill = objectMapper.writeValueAsString(supervisorService.getUsersBySkill(skillId));
+            var usersWithThatSkill = supervisorService.getUsersBySkill(skillId);
+            logger.error("C");
             logger.info("Sending all users with skill: " + skillId + "!");
-            return new ResponseEntity<>(usersWithThatSkill, HttpStatus.OK);
+            return new ResponseEntity<Object>(usersWithThatSkill, HttpStatus.OK);
         } catch (JsonProcessingException e) {
             logger.error("Error at processing the json!");
         } catch (NullPointerException e) {
