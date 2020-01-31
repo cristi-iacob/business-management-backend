@@ -274,7 +274,7 @@ public class SupervisorController {
      * INTERNAL_SERVER_ERROR if something else went wrong
      */
     @GetMapping(value = "/supervisor/getBySkill/skillId")
-    public ResponseEntity<String> getBySkill(@RequestHeader String token, @PathVariable String skillId) {
+    public ResponseEntity<String> getBySkill(@RequestHeader("Authorization") String token, @PathVariable String skillId) {
         try {
             String email = TokenService.getKeyByToken(token);
             if (!supervisorService.isSupervisor(String.valueOf(Objects.hash(email)))) {
