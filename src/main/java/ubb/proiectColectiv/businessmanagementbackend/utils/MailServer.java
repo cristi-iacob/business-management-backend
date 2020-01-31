@@ -69,7 +69,7 @@ public class MailServer {
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(username));
             message.setSubject("BM New registration request!");
-            message.setText("Hello! \n\nA new registration request is pending. Please go to the following link and check it out! \nLink: www.google.com");
+            message.setText("Hello! \n\nA new registration request is pending. Please go to the following link and check it out! \nLink: https://bmaris98.github.io/business-management-webui/");
 
             ArrayList< String > emails = (ArrayList) userService.getAllAdminEmails();
 
