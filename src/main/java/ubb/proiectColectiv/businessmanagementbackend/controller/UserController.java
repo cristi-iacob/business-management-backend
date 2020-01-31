@@ -247,7 +247,7 @@ public class UserController {
             service.acceptChanges(email);
             return null;
         } catch (Exception e) {
-            return new ResponseEntity<>("Oops, something went wrong while accepting the changes!!", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Oops, something went wrong while accepting the chan!ges!!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
