@@ -269,8 +269,11 @@ public class SupervisorController {
     @PostMapping(value = "/supervisor/getBySkill")
     public ResponseEntity<String> getBySkill(@RequestBody HashMap<String, Object> map) {
         try {
+            logger.error("A" + map.toString());
             var skillId = map.get("skillId").toString();
+            logger.error("B" + skillId);
             var usersWithThatSkill = objectMapper.writeValueAsString(supervisorService.getUsersBySkill(skillId));
+            logger.error("C" + usersWithThatSkill);
             logger.info("Sending all users with skill: " + skillId + "!");
             return new ResponseEntity<>(usersWithThatSkill, HttpStatus.OK);
         } catch (JsonProcessingException e) {
