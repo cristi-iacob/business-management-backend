@@ -270,7 +270,7 @@ public class SupervisorController {
      *
      * @param token   Token that the request uses
      * @param skillId Id of the skill to be searched by
-     * @return Status Ok is there were people with this skillId or if there were not, BAD_REQUEST if user is not supervisor
+     * @return Status Ok is there were people with this sskillId or if there were not, BAD_REQUEST if user is not supervisor
      * INTERNAL_SERVER_ERROR if something else went wrong
      */
     @GetMapping(value = "/supervisor/getBySkill")
