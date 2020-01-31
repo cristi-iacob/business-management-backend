@@ -13,6 +13,7 @@ import ubb.proiectColectiv.businessmanagementbackend.model.User;
 import ubb.proiectColectiv.businessmanagementbackend.service.SupervisorService;
 import ubb.proiectColectiv.businessmanagementbackend.service.TokenService;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -265,25 +266,17 @@ public class SupervisorController {
         }
     }
 
-    /**
-     * Gets all users that have skillId in UserSkill
-     *
-     * @param token   Token that the request uses
-     * @param skillId Id of the skill to be searched by
-     * @return Status Ok is there were people with this skillId or if there were not, BAD_REQUEST if user is not supervisor
-     * INTERNAL_SERVER_ERROR if something else went wrong
-     */
-    @GetMapping(value = "/supervisor/getBySkill")
-    public ResponseEntity<String> getBySkill(@RequestHeader(value = "token") String token, @RequestHeader(value = "skillId") String skillId) {
+    @PostMapping(value = "/supervisor/getBySkill")
+    public ResponseEntity<Object> getBySkill(@RequestBody HashMap<String, Object> map) {
         try {
-            String email = TokenService.getKeyByToken(token);
-            if (!supervisorService.isSupervisor(String.valueOf(Objects.hash(email)))) {
-                logger.error("User is not a supervisor");
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            }
-            var usersWithThatSkill = objectMapper.writeValueAsString(supervisorService.getUsersBySkill(skillId));
+            logger.error("A" + map.toString());
+            var skillId = map.get("skillId").toString();
+            logger.error("B" + skillId);
+            //var usersWithThatSkill = objectMapper.writeValueAsString(supervisorService.getUsersBySkill(skillId));
+            var usersWithThatSkill = supervisorService.getUsersBySkill(skillId);
+            logger.error("C");
             logger.info("Sending all users with skill: " + skillId + "!");
-            return new ResponseEntity<>(usersWithThatSkill, HttpStatus.OK);
+            return new ResponseEntity<Object>(usersWithThatSkill, HttpStatus.OK);
         } catch (JsonProcessingException e) {
             logger.error("Error at processing the json!");
         } catch (NullPointerException e) {
@@ -291,7 +284,7 @@ public class SupervisorController {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            logger.error("Error at sending all users with skill " + skillId + "!");
+            logger.error("Error at sending all users with skill " + "!");
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
