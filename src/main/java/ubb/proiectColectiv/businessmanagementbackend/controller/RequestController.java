@@ -17,7 +17,12 @@ public class RequestController {
     private RequestService service;
     private Logger logger = LoggerFactory.getLogger(RequestController.class);
 
-    // TODO: 11-Dec-19 documentation
+    /**
+     * Method for requesting modifications to the user profile.
+     * @param token
+     * @param content
+     * @return ResponseEntity, containing a corresponding message.
+     */
     @PostMapping(value = "/requests/profileRequest/create")
     public ResponseEntity<?> createUserPersonalInfoRequest(@RequestHeader("Authorization") String token, @RequestBody String content) {
         try {
@@ -37,7 +42,12 @@ public class RequestController {
         }
     }
 
-    // TODO: 11-Dec-19 documentation
+    /**
+     * Method for approving new account creation requests.
+     * @param token
+     * @param requestId
+     * @return ResponseEntity, containing a corresponding message.
+     */
     @PostMapping(value = "/requests/profileRequest/approve/{requestId}")
     public ResponseEntity<?> approveUserPersonalInfoRequest(@RequestHeader("Authorization") String token, @PathVariable String requestId) {
         try {
