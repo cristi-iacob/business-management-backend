@@ -6,16 +6,4 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DeleteSkillChangeStrategyTest {
 
-    U
-    @Test
-    void canCompile() {
-
-
-    }
-
-    @Test
-    void preview() {
-
-
-    }
 }
